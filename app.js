@@ -4,19 +4,25 @@ import {
   query, orderBy, limit, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+document.addEventListener("DOMContentLoaded", () => {
 
-/* ----------------------------------------------------------
-   INITIALISE EVENT LISTENERS
----------------------------------------------------------- */
-document.getElementById("addPubBtn").addEventListener("click", addPub);
-document.getElementById("addPintBtn").addEventListener("click", addPint);
-document.getElementById("addPriceBtn").addEventListener("click", addPrice);
-document.getElementById("compareBtn").addEventListener("click", comparePints);
+  // Attach event listeners
+  document.getElementById("addPubBtn").addEventListener("click", addPub);
+  document.getElementById("addPintBtn").addEventListener("click", addPint);
+  document.getElementById("addPriceBtn").addEventListener("click", addPrice);
+  document.getElementById("compareBtn").addEventListener("click", comparePints);
 
+  // Load everything
+  loadPubs();
+  loadPints();
+  loadCheapest();
+  loadLeagueTable();
+  loadPopularityChart();
+  loadPPI();
+  loadRarePints();
+});
 
-/* ----------------------------------------------------------
-   ADD PUB
----------------------------------------------------------- */
+/* ------------------- ADD PUB ------------------- */
 async function addPub() {
   await addDoc(collection(db, "pubs"), {
     name: document.getElementById("pubName").value,
@@ -26,10 +32,7 @@ async function addPub() {
   loadPubs();
 }
 
-
-/* ----------------------------------------------------------
-   ADD PINT
----------------------------------------------------------- */
+/* ------------------- ADD PINT ------------------- */
 async function addPint() {
   await addDoc(collection(db, "pintDefinitions"), {
     name: document.getElementById("pintName").value,
@@ -39,10 +42,7 @@ async function addPint() {
   loadPints();
 }
 
-
-/* ----------------------------------------------------------
-   ADD PRICE ENTRY
----------------------------------------------------------- */
+/* ------------------- ADD PRICE ------------------- */
 async function addPrice() {
   await addDoc(collection(db, "pintPrices"), {
     pubId: document.getElementById("pricePubSelect").value,
@@ -58,27 +58,21 @@ async function addPrice() {
   loadPPI();
 }
 
-
-/* ----------------------------------------------------------
-   LOAD PUBS (FOR SELECT LISTS)
----------------------------------------------------------- */
+/* ------------------- LOAD PUBS ------------------- */
 async function loadPubs() {
   const snap = await getDocs(collection(db, "pubs"));
   const select = document.getElementById("pricePubSelect");
   select.innerHTML = "";
 
   snap.forEach(doc => {
-    let opt = document.createElement("option");
+    const opt = document.createElement("option");
     opt.value = doc.id;
     opt.textContent = doc.data().name;
     select.appendChild(opt);
   });
 }
 
-
-/* ----------------------------------------------------------
-   LOAD PINT TYPES (FOR SELECT LISTS)
----------------------------------------------------------- */
+/* ------------------- LOAD PINTS ------------------- */
 async function loadPints() {
   const snap = await getDocs(collection(db, "pintDefinitions"));
 
@@ -100,26 +94,18 @@ async function loadPints() {
   });
 }
 
-
-/* ----------------------------------------------------------
-   CHEAPEST PINT
----------------------------------------------------------- */
+/* ------------------- CHEAPEST PINT ------------------- */
 async function loadCheapest() {
   const q = query(collection(db, "pintPrices"), orderBy("price"), limit(1));
   const snap = await getDocs(q);
 
-  let output = "No pints yet!";
-  snap.forEach(doc => {
-    output = `£${doc.data().price} 🍺`;
-  });
+  let output = "No data yet!";
+  snap.forEach(doc => output = `£${doc.data().price} 🍺`);
 
   document.getElementById("cheapestPint").innerHTML = output;
 }
 
-
-/* ----------------------------------------------------------
-   LEAGUE TABLE
----------------------------------------------------------- */
+/* ------------------- LEAGUE TABLE ------------------- */
 async function loadLeagueTable() {
   const prices = await getDocs(collection(db, "pintPrices"));
   const pints = await getDocs(collection(db, "pintDefinitions"));
@@ -147,24 +133,21 @@ async function loadLeagueTable() {
   });
 }
 
-
-/* ----------------------------------------------------------
-   POPULARITY CHART (BAR)
----------------------------------------------------------- */
+/* ------------------- POPULARITY CHART ------------------- */
 async function loadPopularityChart() {
   const pints = await getDocs(collection(db, "pintDefinitions"));
   const prices = await getDocs(collection(db, "pintPrices"));
 
-  const count = {};
-  pints.forEach(p => count[p.id] = 0);
-  prices.forEach(pr => count[pr.data().pintId]++);
+  const counts = {};
+  pints.forEach(doc => counts[doc.id] = 0);
+  prices.forEach(doc => counts[doc.data().pintId]++);
 
   const labels = [];
-  const values = [];
+  const data = [];
 
-  pints.forEach(p => {
-    labels.push(p.data().name);
-    values.push(count[p.id]);
+  pints.forEach(doc => {
+    labels.push(doc.data().name);
+    data.push(counts[doc.id]);
   });
 
   new Chart(document.getElementById("popularityChart"), {
@@ -173,17 +156,14 @@ async function loadPopularityChart() {
       labels: labels,
       datasets: [{
         label: "Submissions",
-        data: values,
+        data: data,
         backgroundColor: "#1F2A44"
       }]
     }
   });
 }
 
-
-/* ----------------------------------------------------------
-   PRICE INDEX
----------------------------------------------------------- */
+/* ------------------- PINT PRICE INDEX ------------------- */
 async function loadPPI() {
   const prices = await getDocs(collection(db, "pintPrices"));
   let total = 0, count = 0;
@@ -197,10 +177,7 @@ async function loadPPI() {
   document.getElementById("ppiOutput").innerHTML = `📈 Index: £${index}`;
 }
 
-
-/* ----------------------------------------------------------
-   PINT COMPARISON
----------------------------------------------------------- */
+/* ------------------- COMPARE PINTS ------------------- */
 async function comparePints() {
   const A = document.getElementById("comparePintA").value;
   const B = document.getElementById("comparePintB").value;
@@ -223,10 +200,7 @@ async function comparePints() {
   `;
 }
 
-
-/* ----------------------------------------------------------
-   RARE PINTS (SUBMISSIONS < 3)
----------------------------------------------------------- */
+/* ------------------- RARE PINTS ------------------- */
 async function loadRarePints() {
   const pints = await getDocs(collection(db, "pintDefinitions"));
   const prices = await getDocs(collection(db, "pintPrices"));
@@ -241,10 +215,9 @@ async function loadRarePints() {
   prices.forEach(pr => {
     const d = pr.data();
     count[d.pintId]++;
-    latest[d.pintId] = d; // latest price entry
+    latest[d.pintId] = d;
   });
 
-  // Filter for rare (< 3 submissions)
   const rare = Object.keys(count)
     .filter(id => count[id] < 3)
     .map(id => ({
@@ -264,15 +237,3 @@ async function loadRarePints() {
     </div>
   `).join("");
 }
-
-
-/* ----------------------------------------------------------
-   INITIALISE EVERYTHING
----------------------------------------------------------- */
-loadPubs();
-loadPints();
-loadCheapest();
-loadLeagueTable();
-loadPopularityChart();
-loadPPI();
-loadRarePints();
