@@ -1,155 +1,213 @@
-/* ----------------------------------------------------
+/* ------------------------------
    GLOBAL BASE
----------------------------------------------------- */
+------------------------------ */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
   font-family: 'Inter', sans-serif;
-  background: #F5F1E8;
-  color: #1F2A44;
-  padding: 40px;
+  background: #F3F4F6; /* Soft dashboard grey */
+  color: #1F2937;      /* Slate navy */
+  padding: 20px;
   line-height: 1.7;
 }
 
-h1, h2, h3 {
+.site-title {
   font-family: 'Playfair Display', serif;
+  font-size: 32px;
+  margin-bottom: 6px;
+}
+
+.site-subtitle {
+  font-size: 16px;
+  margin-bottom: 24px;
+  color: #4B5563;
+}
+
+/* ------------------------------
+   TILE CARDS
+------------------------------ */
+.tile {
+  background: #FFFFFF;
+  padding: 24px;
+  margin-bottom: 24px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 14px rgba(0,0,0,0.06);
+}
+
+.tile h2 {
   margin-bottom: 16px;
+  color: #1F2937;
 }
 
-/* Sections */
-section {
-  margin-bottom: 60px;
-  padding-bottom: 30px;
-  border-bottom: 1px solid #D8DCE1;
-}
-
-/* Cards */
-.card {
-  background: white;
-  padding: 20px;
-  margin: 16px 0;
+/* Inner sub-cards for Add Data */
+.subcard {
+  background: #F9FAFB;
+  padding: 16px;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  max-width: 450px;
+  margin-bottom: 16px;
+  border: 1px solid #E5E7EB;
 }
 
-/* Inputs */
 input, select {
-  padding: 10px;
-  margin: 8px 0;
   width: 100%;
-  max-width: 300px;
-  border: 1px solid #D8DCE1;
+  padding: 10px;
+  margin-top: 6px;
+  margin-bottom: 12px;
   border-radius: 6px;
+  border: 1px solid #D1D5DB;
 }
 
-/* Buttons */
 button {
-  background: #8B2E2E;
+  background: #2563EB;
   color: white;
-  padding: 10px 18px;
+  padding: 10px 16px;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  margin-top: 6px;
 }
 
 button:hover {
-  background: #6E2323;
+  background: #1D4ED8;
 }
 
-/* Cheapest Pint Panel */
-#cheapestPintSection {
-  background: #C9A227;
-  color: #1F2A44;
-  padding: 24px;
-  border-radius: 8px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+/* ------------------------------
+   CHEAPEST PINT CARD
+------------------------------ */
+#cheapestPint .cheapest-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
-/* Table */
+.cheapest-pint-name {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.cheapest-pint-price {
+  font-size: 28px;
+  font-weight: bold;
+  color: #F59E0B; /* Amber */
+}
+
+.cheapest-pint-location {
+  font-size: 16px;
+  color: #4B5563;
+}
+
+/* ------------------------------
+   TABLE
+------------------------------ */
 table {
   width: 100%;
-  background: white;
-  border-radius: 8px;
   border-collapse: collapse;
+  border-radius: 8px;
   overflow: hidden;
 }
 
 thead {
-  background: #1F2A44;
+  background: #1F2937;
   color: white;
 }
 
 thead th {
-  padding: 14px;
-  text-align: left;
+  padding: 12px;
+  font-weight: 600;
 }
 
 tbody td {
-  padding: 14px;
-  border-bottom: 1px solid #E0E0E0;
+  padding: 12px;
+  border-bottom: 1px solid #E5E7EB;
 }
 
-/* Popularity Chart */
-#popularityChart {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+/* ------------------------------
+   POLL-STYLE POPULARITY BARS
+------------------------------ */
+.poll-bar-container {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
 }
 
-/* Pint Index */
-#indexSection {
-  background: #FFFFFF;
-  padding: 20px;
-  border-radius: 8px;
-  max-width: 500px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+.poll-label {
+  width: 35%;
+  font-weight: 600;
 }
 
-#ppiOutput {
-  font-size: 24px;
+.poll-bar-wrapper {
+  width: 55%;
+  background: #E5E7EB;
+  border-radius: 6px;
+  height: 18px;
+}
+
+.poll-bar {
+  height: 100%;
+  background-color: #2563EB;
+  border-radius: 6px;
+}
+
+.poll-value {
+  width: 10%;
+  text-align: right;
   font-weight: bold;
 }
 
-/* Comparison Tool */
+/* ------------------------------
+   PINT INDEX
+------------------------------ */
+#indexSection {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+/* ------------------------------
+   COMPARISON RESULT
+------------------------------ */
 #comparisonResult {
-  background: #FDFBF5;
+  background: #F9FAFB;
+  border-left: 4px solid #2563EB;
   padding: 14px;
-  border-left: 4px solid #1F2A44;
-  border-radius: 6px;
+  border-radius: 8px;
   margin-top: 16px;
 }
 
-/* Budget Planner */
-#budgetPlanner {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  max-width: 650px;
-  box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+/* ------------------------------
+   BUDGET PLANNER
+------------------------------ */
+#budgetPlanner input {
+  max-width: 250px;
 }
 
 .bestValueBox {
-  background: #FFF7DD;
+  background: #FFF7D6;
   padding: 16px;
-  margin: 16px 0;
-  border-left: 6px solid #C9A227;
+  border-left: 5px solid #F59E0B;
   border-radius: 6px;
+  margin: 16px 0;
 }
 
-.bestValueItem, .budgetItem {
-  background: #F5F1E8;
+.bestValueItem {
+  background: #EDE9FE;
   padding: 12px;
   border-radius: 6px;
-  margin: 8px 0;
+  margin-bottom: 10px;
 }
 
-footer {
+.budgetItem {
+  background: #F3F4F6;
+  padding: 10px;
+  border-radius: 6px;
+  margin: 6px 0;
+}
+
+/* ------------------------------
+   FOOTER
+------------------------------ */
+.footer {
   text-align: center;
-  background: #1F2A44;
-  color: #FFFFFF;
   padding: 20px;
-  border-radius: 8px;
+  background: #1F2937;
+  color: white;
+  border-radius: 12px;
 }
