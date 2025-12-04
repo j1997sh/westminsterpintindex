@@ -2,110 +2,129 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>🍺 Westminster Pint Exchange (WPX)</title>
+  <title>Westminster Pint Index</title>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
 
-<div class="container">
+<!-- HEADER -->
+<header id="header">
+  <h1>Westminster Pint Index</h1>
+  <div id="header-underline"></div>
 
-  <h1 class="site-title">🍺 Westminster Political Pint Market</h1>
-  <p class="site-subtitle">Live pint prices • Pub comparisons • Market index</p>
+  <!-- Ticker -->
+  <div id="ticker-container">
+    <div id="ticker"></div>
+  </div>
+</header>
 
-  <!-- FULL-WIDTH YELLOW TILE -->
-  <section id="cheapestTile">
-    <div id="cheapestTrend" class="trend-strip"></div>
-    <div id="cheapestContent"></div>
-  </section>
+<!-- CHEAPEST PINT FULL-WIDTH TILE -->
+<section id="cheapestTile">
+  <div id="cheapestTrend" class="trend-strip"></div>
+  <div id="cheapestContent"></div>
+</section>
 
-  <!-- ACCORDION: ADD DATA -->
-  <section class="tile">
-    <h2>➕ Add Data</h2>
+<!-- ADD DATA TILE (ACCORDION) -->
+<section class="tile">
+  <h2>➕ Add Data</h2>
 
-    <div class="accordion">
+  <div class="accordion">
 
-      <!-- Add Pub -->
-      <div class="accordion-item">
-        <button class="accordion-header">🏛️ Add Pub</button>
-        <div class="accordion-body">
-          <input id="pubName" placeholder="Pub name">
-          <input id="pubAddress" placeholder="Address">
-          <button id="addPubBtn">Add Pub</button>
-        </div>
+    <!-- Add Pub -->
+    <div class="accordion-item">
+      <button class="accordion-header">🏛️ Add Pub</button>
+      <div class="accordion-body">
+        <input id="pubName" placeholder="Pub name">
+        <input id="pubAddress" placeholder="Address">
+        <button id="addPubBtn">Add Pub</button>
       </div>
-
-      <!-- Add Pint Type -->
-      <div class="accordion-item">
-        <button class="accordion-header">🍺 Add Pint Type</button>
-        <div class="accordion-body">
-          <input id="pintName" placeholder="Pint name">
-          <input id="pintCategory" placeholder="Category (Lager, IPA, etc)">
-          <button id="addPintBtn">Add Pint</button>
-        </div>
-      </div>
-
-      <!-- Add Price -->
-      <div class="accordion-item">
-        <button class="accordion-header">💷 Add Pint Price</button>
-        <div class="accordion-body">
-          <select id="pricePubSelect"></select>
-          <select id="pricePintSelect"></select>
-          <input id="pintPrice" type="number" placeholder="Price (£)">
-          <button id="addPriceBtn">Submit Price</button>
-        </div>
-      </div>
-
     </div>
-  </section>
 
-  <!-- LEAGUE TABLE AS STOCK CARDS -->
-  <section class="tile">
-    <h2>📊 Market Prices (Stock Cards)</h2>
-    <div id="marketCards"></div>
-  </section>
+    <!-- Add Pint -->
+    <div class="accordion-item">
+      <button class="accordion-header">🍺 Add Pint Type</button>
+      <div class="accordion-body">
+        <input id="pintName" placeholder="Pint name">
+        <input id="pintCategory" placeholder="Category (Lager, IPA...)">
+        <button id="addPintBtn">Add Pint</button>
+      </div>
+    </div>
 
-  <!-- POPULARITY (POLL STYLE) -->
-  <section class="tile">
-    <h2>🔥 Market Volume (Top Pints)</h2>
-    <div id="popularityChartContainer"></div>
-  </section>
+    <!-- Add Price -->
+    <div class="accordion-item">
+      <button class="accordion-header">💷 Add Pint Price</button>
+      <div class="accordion-body">
+        <select id="pricePubSelect"></select>
+        <select id="pricePintSelect"></select>
+        <input id="pintPrice" type="number" placeholder="Price (£)">
+        <button id="addPriceBtn">Submit Price</button>
+      </div>
+    </div>
 
-  <!-- PINT INDEX -->
-  <section class="tile" id="indexSection">
-    <h2>📈 Pint Market Index</h2>
-    <div id="ppiOutput"></div>
-  </section>
+  </div>
+</section>
 
-  <!-- COMPARISON -->
-  <section class="tile">
-    <h2>⚖️ Compare Pints</h2>
-    <select id="comparePintA"></select>
-    <select id="comparePintB"></select>
-    <button id="compareBtn">Compare</button>
-    <div id="comparisonResult"></div>
-  </section>
+<!-- MARKET TABLE -->
+<section class="tile">
+  <h2>📊 Market Prices (Top 5 League Table)</h2>
 
-  <!-- BUDGET PLANNER -->
-  <section class="tile" id="budgetPlanner">
-    <h2>💰 Budget Planner</h2>
-    <input id="budgetInput" type="number" placeholder="Enter your budget (£)">
-    <button id="budgetBtn">Calculate</button>
-    <div id="budgetOutput"></div>
-  </section>
+  <div class="table-scroll">
+    <table id="marketTable">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Pint</th>
+          <th>Pub</th>
+          <th>£</th>
+        </tr>
+      </thead>
+      <tbody id="marketTableBody"></tbody>
+    </table>
+  </div>
 
-  <!-- RARE PINTS -->
-  <section class="tile">
-    <h2>🌟 Rare Pints</h2>
-    <div id="rarePints"></div>
-  </section>
+  <button id="expandTableBtn" class="expand-btn">Show Full Table ▼</button>
+</section>
 
-</div>
+<!-- POPULARITY -->
+<section class="tile">
+  <h2>🔥 Market Volume (Popularity)</h2>
+  <div id="popularityChartContainer"></div>
+</section>
+
+<!-- PINT INDEX -->
+<section class="tile" id="indexSection">
+  <h2>📈 Pint Market Index</h2>
+  <div id="ppiOutput"></div>
+</section>
+
+<!-- COMPARISON -->
+<section class="tile">
+  <h2>⚖️ Compare Pints</h2>
+  <select id="comparePintA"></select>
+  <select id="comparePintB"></select>
+  <button id="compareBtn">Compare</button>
+  <div id="comparisonResult"></div>
+</section>
+
+<!-- BUDGET PLANNER -->
+<section class="tile" id="budgetPlanner">
+  <h2>💰 Budget Planner</h2>
+  <input id="budgetInput" type="number" placeholder="Enter your budget (£)">
+  <button id="budgetBtn">Calculate</button>
+  <div id="budgetOutput"></div>
+</section>
+
+<!-- RARE PINTS -->
+<section class="tile">
+  <h2>🌟 Rare Pints</h2>
+  <div id="rarePints"></div>
+</section>
 
 <footer class="footer">
-  Westminster Pint Exchange © 2025 🍺 Powered by Firestore
+  Westminster Pint Index © 2025
 </footer>
 
 <script type="module" src="firebase.js"></script>
