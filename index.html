@@ -4,184 +4,133 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Westminster Pint Index</title>
-
-  <!-- Styles -->
   <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
 
-  <!-- HEADER -->
-  <header class="app-header">
-    <h1 class="app-title">Westminster Pint Index</h1>
-    <div class="ticker-bar">
-      <span id="ticker">Loading market data...</span>
-    </div>
-  </header>
+<header id="header">
+  <h1>Westminster Pint Index</h1>
+  <div id="ticker"></div>
+</header>
 
+<!-- HERO: Cheapest Pint -->
+<section id="hero">
+  <div id="heroContent">Loading…</div>
+</section>
 
-  <!-- MAIN CONTENT WRAPPER -->
-  <main class="content">
+<!-- ADD DATA -->
+<section class="section-title">➕ Add Data</section>
 
-    <!-- DATA INPUT SECTION -->
-    <section class="section">
-      <h2 class="section-title">➕ Add Data</h2>
+<div class="flex-row">
+  <div class="card">
+    <h2>🏛️ Add Pub</h2>
+    <input id="pubName" placeholder="Pub name">
+    <input id="pubAddress" placeholder="Address">
+    <button id="addPubBtn">Add Pub</button>
+  </div>
 
-      <div class="input-grid">
+  <div class="card">
+    <h2>🍺 Add Pint Type</h2>
+    <input id="pintName" placeholder="Pint name">
+    <input id="pintCategory" placeholder="Category (e.g., Lager)">
+    <button id="addPintBtn">Add Pint</button>
+  </div>
+</div>
 
-        <!-- ADD PUB -->
-        <div class="card">
-          <h3 class="card-title">🏛️ Add Pub</h3>
-          <input id="pubName" placeholder="Pub name" />
-          <input id="pubAddress" placeholder="Address" />
-          <button id="addPubBtn" class="btn-primary">Add Pub</button>
-        </div>
+<div class="card">
+  <h2>💷 Add Pint Price</h2>
+  <select id="pricePubSelect"></select>
+  <select id="pricePintSelect"></select>
+  <input id="pintPrice" type="number" step="0.01" placeholder="Price (£)">
+  <button id="addPriceBtn">Submit Price</button>
+</div>
 
-        <!-- ADD PINT -->
-        <div class="card">
-          <h3 class="card-title">🍺 Add Pint Type</h3>
-          <input id="pintName" placeholder="Pint name" />
-          <input id="pintCategory" placeholder="Category (e.g. Lager)" />
-          <button id="addPintBtn" class="btn-primary">Add Pint</button>
-        </div>
+<!-- DASHBOARD -->
+<section class="section-title">📊 Pint Dashboard</section>
 
-      </div>
+<div class="flex-row">
+  <div class="card">
+    <h2>📈 Pint Index</h2>
+    <div id="ppiOutput" class="big-number"></div>
+  </div>
 
-      <!-- ADD PRICE -->
-      <div class="card full-width">
-        <h3 class="card-title">💷 Add Pint Price</h3>
-        <div class="row">
-          <select id="pricePubSelect"></select>
-          <select id="pricePintSelect"></select>
-          <input id="pintPrice" type="number" placeholder="Price (£)" />
-        </div>
-        <button id="addPriceBtn" class="btn-primary">Submit Price</button>
-      </div>
+  <div class="card collapsible">
+    <h2 class="collapse-toggle">🔥 Popularity <span>▼</span></h2>
+    <div id="popularityChartContainer" class="collapsed-content"></div>
+  </div>
+</div>
 
-    </section>
+<!-- MARKET PRICES -->
+<div class="card">
+  <h2>📉 Market Prices (League Table)</h2>
+  <table id="marketTable">
+    <thead>
+      <tr><th>#</th><th>Pint</th><th>Pub</th><th>£</th></tr>
+    </thead>
+    <tbody id="marketTableBody"></tbody>
+  </table>
+  <button id="expandTableBtn" class="btn-secondary">Show Full Table ▼</button>
+</div>
 
+<!-- PRICE DISTRIBUTION -->
+<div class="card">
+  <h2>📊 Price Distribution</h2>
+  <div id="priceDistribution"></div>
+</div>
 
+<!-- TOP 5 CHEAPEST PUBS -->
+<div class="card">
+  <h2>🏆 Top 5 Cheapest Pubs</h2>
+  <div id="cheapestPubs"></div>
+</div>
 
-    <!-- HERO CHEAPEST -->
-    <section id="hero-container" class="hero-card">
-      <div id="hero-content">Loading cheapest pint...</div>
-    </section>
+<!-- RECOMMENDATIONS -->
+<div class="card">
+  <h2>⭐ Recommended for You</h2>
+  <div id="recommendations"></div>
+</div>
 
+<!-- NEW TOOL: Cheapest Pint Selector -->
+<div class="card">
+  <h2>🔎 Where is the Cheapest…?</h2>
+  <select id="cheapestSelect"></select>
+  <button id="findCheapestBtn">Find Cheapest</button>
+  <div id="cheapestResult"></div>
+</div>
 
-    <!-- INDEX + POPULARITY -->
-    <section class="section">
+<!-- BUDGET PLANNER -->
+<div class="card">
+  <h2>💰 Budget Planner</h2>
+  <input id="budgetInput" type="number" placeholder="Enter £ budget">
+  <button id="budgetBtn">Calculate</button>
+  <div id="budgetOutput"></div>
+</div>
 
-      <div class="two-col">
+<!-- RARE PINTS -->
+<div class="card">
+  <h2>🌟 Rare Pints</h2>
+  <div id="rarePints"></div>
+</div>
 
-        <!-- PINT INDEX -->
-        <div class="card">
-          <h3 class="card-title">📈 Pint Index</h3>
-          <div id="ppiOutput" class="big-number">£0.00</div>
-        </div>
+<!-- ADMIN -->
+<div id="adminToggle">Admin</div>
 
-        <!-- POPULARITY -->
-        <div class="card">
-          <h3 class="card-title">🔥 Popularity</h3>
-          <div id="popularityChartContainer"></div>
-          <button id="expandPopularityBtn" class="btn-small">Show More ▼</button>
-        </div>
+<div id="adminPanel" class="card" style="display:none;">
+  <h2>🔐 Admin Login</h2>
+  <input id="adminCodeInput" placeholder="Enter admin password">
+  <button id="adminUnlockBtn">Unlock</button>
+</div>
 
-      </div>
-    </section>
+<div id="adminTools" class="card" style="display:none;">
+  <h2>⚠️ Admin Tools</h2>
+  <button id="wipePricesBtn" class="danger">Wipe Price Data</button>
+  <button id="wipeAllBtn" class="danger">Wipe ALL Data</button>
+</div>
 
+<footer>Westminster Pint Index © 2025</footer>
 
-    <!-- LEAGUE TABLE -->
-    <section class="section">
-      <div class="card full-width">
-        <h3 class="card-title">📊 Market Prices (League Table)</h3>
-        <table id="marketTable">
-          <thead>
-            <tr>
-              <th>#</th><th>Pint</th><th>Pub</th><th>£</th>
-            </tr>
-          </thead>
-          <tbody id="marketTableBody"></tbody>
-        </table>
-        <button id="expandTableBtn" class="btn-small">Show Full Table ▼</button>
-      </div>
-    </section>
-
-
-    <!-- ANALYTICS -->
-    <section class="section">
-      <h2 class="section-title">🔍 Pint Intelligence</h2>
-
-      <div class="card full-width">
-        <h3 class="card-title">📉 Price Distribution</h3>
-        <div id="priceDistribution"></div>
-      </div>
-
-      <div class="card full-width">
-        <h3 class="card-title">🏆 Top 5 Cheapest Pubs</h3>
-        <div id="cheapestPubs"></div>
-      </div>
-
-      <div class="card full-width">
-        <h3 class="card-title">⭐ Recommended for You</h3>
-        <div id="recommendations"></div>
-      </div>
-    </section>
-
-
-    <!-- TOOLS -->
-    <section class="section">
-
-      <div class="card full-width">
-        <h3 class="card-title">⚖️ Compare Pints</h3>
-        <select id="comparePintA"></select>
-        <select id="comparePintB"></select>
-        <button id="compareBtn" class="btn-primary">Compare</button>
-        <div id="comparisonResult" class="result-box"></div>
-      </div>
-
-      <div class="card full-width">
-        <h3 class="card-title">💰 Budget Planner</h3>
-        <input id="budgetInput" type="number" placeholder="Enter Budget (£)" />
-        <button id="budgetBtn" class="btn-primary">Calculate</button>
-        <div id="budgetOutput" class="result-box"></div>
-      </div>
-
-      <div class="card full-width">
-        <h3 class="card-title">🌟 Rare Pints</h3>
-        <div id="rarePints"></div>
-      </div>
-
-    </section>
-
-
-    <!-- ADMIN -->
-    <section class="section">
-      <div id="adminLockTrigger" class="admin-link">Admin</div>
-
-      <div id="adminLockPanel" class="card full-width" style="display:none;">
-        <h3 class="card-title">🔐 Enter Admin Code</h3>
-        <input id="adminCodeInput" placeholder="Enter admin code" />
-        <button id="adminUnlockBtn" class="btn-primary">Unlock</button>
-      </div>
-
-      <div id="adminTools" class="card full-width" style="display:none;">
-        <h3 class="card-title">⚠️ Admin Tools</h3>
-        <button id="wipeAllBtn" class="btn-danger">Wipe ALL Data</button>
-        <button id="wipePricesBtn" class="btn-danger">Wipe Prices Only</button>
-      </div>
-    </section>
-
-
-  </main>
-
-
-  <footer class="footer">
-    Westminster Pint Index © 2025
-  </footer>
-
-  <!-- JS -->
-  <script type="module" src="firebase.js"></script>
-  <script type="module" src="app.js"></script>
-
+<script type="module" src="firebase.js"></script>
+<script type="module" src="app.js"></script>
 </body>
 </html>
