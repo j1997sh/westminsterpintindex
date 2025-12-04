@@ -5,15 +5,12 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-
-  // Attach event listeners
   document.getElementById("addPubBtn").addEventListener("click", addPub);
   document.getElementById("addPintBtn").addEventListener("click", addPint);
   document.getElementById("addPriceBtn").addEventListener("click", addPrice);
   document.getElementById("compareBtn").addEventListener("click", comparePints);
   document.getElementById("budgetBtn").addEventListener("click", calculateBudget);
 
-  // Load everything
   loadPubs();
   loadPints();
   loadCheapest();
@@ -23,9 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadRarePints();
 });
 
-/* ----------------------------------------------------------
-   ADD PUB
----------------------------------------------------------- */
+/* ---------------- ADD PUB ------------------ */
 async function addPub() {
   await addDoc(collection(db, "pubs"), {
     name: document.getElementById("pubName").value,
@@ -35,9 +30,7 @@ async function addPub() {
   loadPubs();
 }
 
-/* ----------------------------------------------------------
-   ADD PINT
----------------------------------------------------------- */
+/* ---------------- ADD PINT ------------------ */
 async function addPint() {
   await addDoc(collection(db, "pintDefinitions"), {
     name: document.getElementById("pintName").value,
@@ -47,9 +40,7 @@ async function addPint() {
   loadPints();
 }
 
-/* ----------------------------------------------------------
-   ADD PRICE
----------------------------------------------------------- */
+/* ---------------- ADD PRICE ------------------ */
 async function addPrice() {
   await addDoc(collection(db, "pintPrices"), {
     pubId: document.getElementById("pricePubSelect").value,
@@ -65,9 +56,7 @@ async function addPrice() {
   loadPPI();
 }
 
-/* ----------------------------------------------------------
-   LOAD PUBS
----------------------------------------------------------- */
+/* ---------------- LOAD PUBS ------------------ */
 async function loadPubs() {
   const snap = await getDocs(collection(db, "pubs"));
   const select = document.getElementById("pricePubSelect");
@@ -81,9 +70,7 @@ async function loadPubs() {
   });
 }
 
-/* ----------------------------------------------------------
-   LOAD PINT TYPES
----------------------------------------------------------- */
+/* ---------------- LOAD PINTS ------------------ */
 async function loadPints() {
   const snap = await getDocs(collection(db, "pintDefinitions"));
 
@@ -105,25 +92,35 @@ async function loadPints() {
   });
 }
 
-/* ----------------------------------------------------------
-   CHEAPEST PINT
----------------------------------------------------------- */
+/* ---------------- CHEAPEST PINT ------------------ */
 async function loadCheapest() {
   const q = query(collection(db, "pintPrices"), orderBy("price"), limit(1));
   const snap = await getDocs(q);
 
-  let output = "No data yet!";
-  snap.forEach(doc => {
-    const d = doc.data();
-    output = `£${d.price} 🍺`;
-  });
+  if (snap.empty) {
+    document.getElementById("cheapestPint").innerHTML = "No prices submitted yet!";
+    return;
+  }
 
-  document.getElementById("cheapestPint").innerHTML = output;
+  const cheapest = snap.docs[0].data();
+
+  const pintSnap = await getDocs(collection(db, "pintDefinitions"));
+  const pintInfo = pintSnap.docs.find(d => d.id === cheapest.pintId)?.data();
+
+  const pubSnap = await getDocs(collection(db, "pubs"));
+  const pubInfo = pubSnap.docs.find(d => d.id === cheapest.pubId)?.data();
+
+  document.getElementById("cheapestPint").innerHTML = `
+    <div class="cheapest-wrapper">
+      <div class="cheapest-pint-name">🍺 ${pintInfo?.name} (${pintInfo?.category})</div>
+      <div class="cheapest-pint-price">£${cheapest.price}</div>
+      <div class="cheapest-pint-location">📍 ${pubInfo?.name}</div>
+      <div class="cheapest-pint-trend">➡️ Stable today</div>
+    </div>
+  `;
 }
 
-/* ----------------------------------------------------------
-   LEAGUE TABLE
----------------------------------------------------------- */
+/* ---------------- LEAGUE TABLE ------------------ */
 async function loadLeagueTable() {
   const prices = await getDocs(collection(db, "pintPrices"));
   const pints = await getDocs(collection(db, "pintDefinitions"));
@@ -141,18 +138,16 @@ async function loadLeagueTable() {
     const d = doc.data();
     const row = document.createElement("tr");
     row.innerHTML = `
-      <td>${pintMap[d.pintId].name}</td>
-      <td>${pintMap[d.pintId].category}</td>
-      <td>${pubMap[d.pubId].name}</td>
+      <td>${pintMap[d.pintId]?.name}</td>
+      <td>${pintMap[d.pintId]?.category}</td>
+      <td>${pubMap[d.pubId]?.name}</td>
       <td>£${d.price}</td>
     `;
     body.appendChild(row);
   });
 }
 
-/* ----------------------------------------------------------
-   POPULARITY CHART
----------------------------------------------------------- */
+/* ---------------- POPULARITY (POLL BAR) ------------------ */
 async function loadPopularityChart() {
   const pints = await getDocs(collection(db, "pintDefinitions"));
   const prices = await getDocs(collection(db, "pintPrices"));
@@ -161,36 +156,35 @@ async function loadPopularityChart() {
   pints.forEach(doc => counts[doc.id] = 0);
   prices.forEach(doc => counts[doc.data().pintId]++);
 
-  const labels = [];
-  const data = [];
+  const results = pints.docs.map(doc => ({
+    name: doc.data().name,
+    count: counts[doc.id]
+  }));
 
-  pints.forEach(doc => {
-    labels.push(doc.data().name);
-    data.push(counts[doc.id]);
-  });
+  results.sort((a, b) => b.count - a.count);
 
-  new Chart(document.getElementById("popularityChart"), {
-    type: "bar",
-    data: {
-      labels,
-      datasets: [{
-        label: "Submissions",
-        data,
-        backgroundColor: "#1F2A44"
-      }]
-    }
-  });
+  const max = results[0]?.count || 1;
+  const container = document.getElementById("popularityChartContainer");
+
+  container.innerHTML = results.map(r => `
+    <div class="poll-bar-container">
+      <div class="poll-label">${r.name}</div>
+      <div class="poll-bar-wrapper">
+        <div class="poll-bar" style="width: ${(r.count / max) * 100}%"></div>
+      </div>
+      <div class="poll-value">${r.count}</div>
+    </div>
+  `).join("");
 }
 
-/* ----------------------------------------------------------
-   PINT PRICE INDEX
----------------------------------------------------------- */
+/* ---------------- PINT INDEX ------------------ */
 async function loadPPI() {
   const prices = await getDocs(collection(db, "pintPrices"));
-  let total = 0, count = 0;
 
-  prices.forEach(doc => {
-    total += doc.data().price;
+  let total = 0;
+  let count = 0;
+  prices.forEach(d => {
+    total += d.data().price;
     count++;
   });
 
@@ -198,15 +192,12 @@ async function loadPPI() {
   document.getElementById("ppiOutput").innerHTML = `📈 Index: £${index}`;
 }
 
-/* ----------------------------------------------------------
-   COMPARE PINTS
----------------------------------------------------------- */
+/* ---------------- COMPARE PINTS ------------------ */
 async function comparePints() {
   const A = document.getElementById("comparePintA").value;
   const B = document.getElementById("comparePintB").value;
 
   const prices = await getDocs(collection(db, "pintPrices"));
-
   const aVals = [], bVals = [];
 
   prices.forEach(doc => {
@@ -223,9 +214,7 @@ async function comparePints() {
   `;
 }
 
-/* ----------------------------------------------------------
-   RARE PINTS (< 3 submissions)
----------------------------------------------------------- */
+/* ---------------- RARE PINTS ------------------ */
 async function loadRarePints() {
   const pints = await getDocs(collection(db, "pintDefinitions"));
   const prices = await getDocs(collection(db, "pintPrices"));
@@ -263,9 +252,7 @@ async function loadRarePints() {
   `).join("");
 }
 
-/* ----------------------------------------------------------
-   BUDGET PLANNER (A + B + C + D version)
----------------------------------------------------------- */
+/* ---------------- BUDGET PLANNER ------------------ */
 async function calculateBudget() {
   const budget = Number(document.getElementById("budgetInput").value);
   const output = document.getElementById("budgetOutput");
