@@ -1,287 +1,164 @@
-/* ================================
-   GLOBAL RESET + BASE
-================================ */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: -apple-system, BlinkMacSystemFont, "Inter", Arial, sans-serif;
-}
-
 body {
-  background: #f5f6f8;
-  color: #1a1a1a;
-  line-height: 1.5;
-  padding-bottom: 60px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  margin: 0;
+  background: #f4f5f7;
+  padding-bottom: 50px;
 }
 
-/* ================================
-   HEADER
-================================ */
-.app-header {
-  background: #0d1b3d;
-  color: white;
-  padding: 18px;
+h1 {
+  margin: 0;
+  padding: 20px;
   text-align: center;
-  border-bottom: 3px solid #ffcc00;
-}
-
-.app-title {
-  font-size: 1.6rem;
-  font-weight: 700;
-  margin-bottom: 6px;
-}
-
-.ticker-bar {
-  background: rgba(255,255,255,0.12);
-  padding: 6px;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  overflow: hidden;
-  white-space: nowrap;
+  background: #0b1a33;
+  color: white;
 }
 
 #ticker {
-  display: inline-block;
-  animation: tickerMove 12s linear infinite;
+  text-align: center;
+  padding: 8px;
+  background: #102347;
+  color: #e8e8e8;
+  font-size: 14px;
 }
 
-@keyframes tickerMove {
-  from { transform: translateX(0); }
-  to { transform: translateX(-60%); }
+#hero {
+  background: #ffd933;
+  padding: 20px;
+  text-align: center;
 }
 
-/* ================================
-   MAIN CONTENT
-================================ */
-.content {
-  padding: 16px;
-  max-width: 1100px;
-  margin: auto;
-}
-
-/* ================================
-   SECTIONS + TITLES
-================================ */
-.section {
-  margin-top: 32px;
+#heroContent {
+  font-size: 22px;
+  font-weight: bold;
 }
 
 .section-title {
-  font-size: 1.3rem;
-  margin-bottom: 12px;
-  font-weight: 700;
+  font-weight: bold;
+  margin: 20px;
+  font-size: 22px;
 }
 
-/* ================================
-   CARDS
-================================ */
 .card {
   background: white;
-  border-radius: 14px;
-  padding: 16px;
-  margin-bottom: 16px;
-  box-shadow: 0px 3px 6px rgba(0,0,0,0.05);
+  padding: 18px;
+  margin: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
 
-.full-width {
-  width: 100%;
-}
-
-.card-title {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-bottom: 12px;
-}
-
-/* ================================
-   GRID LAYOUT (MOBILE FIRST)
-================================ */
-.input-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 16px;
-}
-
-.two-col {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 16px;
-}
-
-@media (min-width: 700px) {
-  .input-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .two-col {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-/* ================================
-   HERO CARD
-================================ */
-.hero-card {
-  background: #ffcc00;
-  color: #1a1a1a;
-  padding: 22px;
-  border-radius: 14px;
-  margin-top: 20px;
-  margin-bottom: 20px;
-  font-size: 1.1rem;
-  font-weight: 600;
-}
-
-.hero-card div {
-  margin-bottom: 6px;
-}
-
-/* ================================
-   INPUTS + BUTTONS
-================================ */
-input, select {
-  width: 100%;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  margin-bottom: 10px;
-  font-size: 1rem;
-  background: #fafafa;
-}
-
-.row {
+.flex-row {
   display: flex;
-  gap: 10px;
+  flex-wrap: wrap;
+  gap: 15px;
 }
 
-.row select, .row input {
-  flex: 1;
-}
-
-.btn-primary {
+.card input,
+.card select,
+button {
   width: 100%;
-  background: #1a56db;
-  color: white;
-  border: none;
-  padding: 12px;
-  font-size: 1rem;
-  border-radius: 10px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.btn-primary:hover {
-  background: #0e3fad;
-}
-
-.btn-small {
-  width: 100%;
-  background: #0d1b3d;
-  color: white;
-  border: none;
-  padding: 8px;
-  font-size: 0.9rem;
-  border-radius: 8px;
-  cursor: pointer;
   margin-top: 8px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 16px;
 }
 
-.btn-danger {
-  background: #d62828;
+button {
+  background: #1f5bff;
   color: white;
-  padding: 12px;
-  width: 100%;
   border: none;
-  border-radius: 10px;
-  font-size: 1rem;
+}
+
+button.danger {
+  background: #c62828;
+}
+
+.btn-secondary {
+  background: #0b1a33;
+  color: #fff;
+}
+
+.big-number {
+  font-size: 32px;
+  font-weight: bold;
+}
+
+.collapsible .collapsed-content {
+  display: none;
+}
+
+.collapsible.open .collapsed-content {
+  display: block;
+}
+
+.collapse-toggle {
+  cursor: pointer;
+}
+
+/* Market Table */
+#marketTable {
+  width: 100%;
+  border-collapse: collapse;
   margin-top: 10px;
 }
 
-.btn-danger:hover {
-  background: #b71f1f;
+#marketTable th, #marketTable td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
 }
 
-/* ================================
-   TABLE
-================================ */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.95rem;
-}
-
-thead {
-  background: #0d1b3d;
-  color: white;
-}
-
-th, td {
-  padding: 10px;
-}
-
-tbody tr:nth-child(even) {
-  background: #f2f4f7;
-}
-
-tbody tr:hover {
-  background: #e6eaf0;
-}
-
-/* ================================
-   POPULARITY & DISTRIBUTION BARS
-================================ */
-.poll-label, .dist-label {
-  font-size: 0.9rem;
-  margin-top: 6px;
-}
-
-.poll-bar-wrapper, .dist-bar-wrapper {
-  width: 100%;
+/* Distribution Bars */
+.dist-bar-wrapper {
+  background: #e5e5e5;
   height: 10px;
-  background: #e5e7eb;
-  border-radius: 10px;
+  border-radius: 6px;
   margin-bottom: 8px;
 }
 
-.poll-bar {
-  background: #1a56db;
-  height: 10px;
-  border-radius: 10px;
-}
-
 .dist-bar {
-  background: #ffb703;
   height: 10px;
-  border-radius: 10px;
+  background: #1f5bff;
+  border-radius: 6px;
 }
 
-/* ================================
-   RESULT BOXES
-================================ */
-.result-box {
-  margin-top: 12px;
-  padding: 12px;
-  background: #eef2ff;
-  border-radius: 10px;
-  font-size: 1rem;
+/* Popularity Bars */
+.poll-bar-wrapper {
+  background: #eee;
+  height: 10px;
+  border-radius: 6px;
 }
 
-/* ================================
-   ADMIN LINK + FOOTER
-================================ */
-.admin-link {
+.poll-bar {
+  height: 10px;
+  background: #1f5bff;
+  border-radius: 6px;
+}
+
+/* Rare Pints Table */
+.rare-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.rare-table th, .rare-table td {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+/* Admin toggle */
+#adminToggle {
   text-align: center;
-  margin-top: 12px;
-  font-size: 0.95rem;
-  color: #1a56db;
+  padding: 8px;
+  background: #ccc;
+  border-radius: 6px;
+  width: 80px;
+  margin: 20px auto;
   cursor: pointer;
 }
 
-.footer {
+footer {
   text-align: center;
-  margin-top: 40px;
+  margin-top: 30px;
   padding: 20px;
-  font-size: 0.9rem;
   color: #777;
 }
