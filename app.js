@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("addPintBtn").addEventListener("click", addPint);
   document.getElementById("addPriceBtn").addEventListener("click", addPrice);
   document.getElementById("compareBtn").addEventListener("click", comparePints);
+  document.getElementById("budgetBtn").addEventListener("click", calculateBudget);
 
   // Load everything
   loadPubs();
@@ -22,7 +23,9 @@ document.addEventListener("DOMContentLoaded", () => {
   loadRarePints();
 });
 
-/* ------------------- ADD PUB ------------------- */
+/* ----------------------------------------------------------
+   ADD PUB
+---------------------------------------------------------- */
 async function addPub() {
   await addDoc(collection(db, "pubs"), {
     name: document.getElementById("pubName").value,
@@ -32,7 +35,9 @@ async function addPub() {
   loadPubs();
 }
 
-/* ------------------- ADD PINT ------------------- */
+/* ----------------------------------------------------------
+   ADD PINT
+---------------------------------------------------------- */
 async function addPint() {
   await addDoc(collection(db, "pintDefinitions"), {
     name: document.getElementById("pintName").value,
@@ -42,7 +47,9 @@ async function addPint() {
   loadPints();
 }
 
-/* ------------------- ADD PRICE ------------------- */
+/* ----------------------------------------------------------
+   ADD PRICE
+---------------------------------------------------------- */
 async function addPrice() {
   await addDoc(collection(db, "pintPrices"), {
     pubId: document.getElementById("pricePubSelect").value,
@@ -58,7 +65,9 @@ async function addPrice() {
   loadPPI();
 }
 
-/* ------------------- LOAD PUBS ------------------- */
+/* ----------------------------------------------------------
+   LOAD PUBS
+---------------------------------------------------------- */
 async function loadPubs() {
   const snap = await getDocs(collection(db, "pubs"));
   const select = document.getElementById("pricePubSelect");
@@ -72,7 +81,9 @@ async function loadPubs() {
   });
 }
 
-/* ------------------- LOAD PINTS ------------------- */
+/* ----------------------------------------------------------
+   LOAD PINT TYPES
+---------------------------------------------------------- */
 async function loadPints() {
   const snap = await getDocs(collection(db, "pintDefinitions"));
 
@@ -94,18 +105,25 @@ async function loadPints() {
   });
 }
 
-/* ------------------- CHEAPEST PINT ------------------- */
+/* ----------------------------------------------------------
+   CHEAPEST PINT
+---------------------------------------------------------- */
 async function loadCheapest() {
   const q = query(collection(db, "pintPrices"), orderBy("price"), limit(1));
   const snap = await getDocs(q);
 
   let output = "No data yet!";
-  snap.forEach(doc => output = `£${doc.data().price} 🍺`);
+  snap.forEach(doc => {
+    const d = doc.data();
+    output = `£${d.price} 🍺`;
+  });
 
   document.getElementById("cheapestPint").innerHTML = output;
 }
 
-/* ------------------- LEAGUE TABLE ------------------- */
+/* ----------------------------------------------------------
+   LEAGUE TABLE
+---------------------------------------------------------- */
 async function loadLeagueTable() {
   const prices = await getDocs(collection(db, "pintPrices"));
   const pints = await getDocs(collection(db, "pintDefinitions"));
@@ -122,7 +140,6 @@ async function loadLeagueTable() {
   prices.forEach(doc => {
     const d = doc.data();
     const row = document.createElement("tr");
-
     row.innerHTML = `
       <td>${pintMap[d.pintId].name}</td>
       <td>${pintMap[d.pintId].category}</td>
@@ -133,7 +150,9 @@ async function loadLeagueTable() {
   });
 }
 
-/* ------------------- POPULARITY CHART ------------------- */
+/* ----------------------------------------------------------
+   POPULARITY CHART
+---------------------------------------------------------- */
 async function loadPopularityChart() {
   const pints = await getDocs(collection(db, "pintDefinitions"));
   const prices = await getDocs(collection(db, "pintPrices"));
@@ -153,17 +172,19 @@ async function loadPopularityChart() {
   new Chart(document.getElementById("popularityChart"), {
     type: "bar",
     data: {
-      labels: labels,
+      labels,
       datasets: [{
         label: "Submissions",
-        data: data,
+        data,
         backgroundColor: "#1F2A44"
       }]
     }
   });
 }
 
-/* ------------------- PINT PRICE INDEX ------------------- */
+/* ----------------------------------------------------------
+   PINT PRICE INDEX
+---------------------------------------------------------- */
 async function loadPPI() {
   const prices = await getDocs(collection(db, "pintPrices"));
   let total = 0, count = 0;
@@ -177,7 +198,9 @@ async function loadPPI() {
   document.getElementById("ppiOutput").innerHTML = `📈 Index: £${index}`;
 }
 
-/* ------------------- COMPARE PINTS ------------------- */
+/* ----------------------------------------------------------
+   COMPARE PINTS
+---------------------------------------------------------- */
 async function comparePints() {
   const A = document.getElementById("comparePintA").value;
   const B = document.getElementById("comparePintB").value;
@@ -200,7 +223,9 @@ async function comparePints() {
   `;
 }
 
-/* ------------------- RARE PINTS ------------------- */
+/* ----------------------------------------------------------
+   RARE PINTS (< 3 submissions)
+---------------------------------------------------------- */
 async function loadRarePints() {
   const pints = await getDocs(collection(db, "pintDefinitions"));
   const prices = await getDocs(collection(db, "pintPrices"));
@@ -229,11 +254,88 @@ async function loadRarePints() {
 
   const out = document.getElementById("rarePints");
   out.innerHTML = rare.map(r => `
-    <div>
+    <div class="budgetItem">
       🌟 <strong>${r.name}</strong><br>
       📍 ${r.pub}<br>
       💷 £${r.price || "?"}<br>
       Rarity Score: ⭐${"⭐".repeat(3 - r.count)}
     </div>
   `).join("");
+}
+
+/* ----------------------------------------------------------
+   BUDGET PLANNER (A + B + C + D version)
+---------------------------------------------------------- */
+async function calculateBudget() {
+  const budget = Number(document.getElementById("budgetInput").value);
+  const output = document.getElementById("budgetOutput");
+
+  if (!budget || budget <= 0) {
+    output.innerHTML = "⚠️ Please enter a valid amount.";
+    return;
+  }
+
+  const pricesSnap = await getDocs(collection(db, "pintPrices"));
+  const pintsSnap = await getDocs(collection(db, "pintDefinitions"));
+  const pubsSnap = await getDocs(collection(db, "pubs"));
+
+  const pintMap = {};
+  const pubMap = {};
+
+  pintsSnap.forEach(p => pintMap[p.id] = p.data().name);
+  pubsSnap.forEach(p => pubMap[p.id] = p.data().name);
+
+  let results = [];
+
+  pricesSnap.forEach(pr => {
+    const d = pr.data();
+    const count = Math.floor(budget / d.price);
+
+    if (count > 0) {
+      const total = count * d.price;
+      const change = budget - total;
+
+      results.push({
+        pint: pintMap[d.pintId],
+        pub: pubMap[d.pubId],
+        count,
+        price: d.price,
+        total,
+        change
+      });
+    }
+  });
+
+  results.sort((a, b) => b.count - a.count || a.price - b.price);
+
+  const best = results[0];
+  const topThree = results.slice(0, 3);
+
+  output.innerHTML = `
+    <h3>🧾 Breakdown for £${budget}</h3>
+
+    <div class="bestValueBox">
+      <h3>🏆 Best Value Recommendation</h3>
+      <p>🍺 <strong>${best.count} × ${best.pint}</strong> @ ${best.pub}</p>
+      <p>💷 Total: £${best.total.toFixed(2)}</p>
+      <p>💰 Change left: £${best.change.toFixed(2)}</p>
+    </div>
+
+    <h3>🥇 Top 3 Best Buys</h3>
+    ${topThree.map((r, i) => `
+      <div class="bestValueItem">
+        ${i === 0 ? "🥇" : i === 1 ? "🥈" : "🥉"}
+        <strong>${r.count} × ${r.pint}</strong> @ ${r.pub}
+        — £${r.total.toFixed(2)} (change £${r.change.toFixed(2)})
+      </div>
+    `).join("")}
+
+    <h3>📦 Full Breakdown</h3>
+    ${results.map(r => `
+      <div class="budgetItem">
+        🍺 ${r.count} × ${r.pint} @ ${r.pub}<br>
+        💵 £${r.total.toFixed(2)} spent, £${r.change.toFixed(2)} left
+      </div>
+    `).join("")}
+  `;
 }
