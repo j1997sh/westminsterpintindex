@@ -12,28 +12,26 @@
 
 <!-- HEADER -->
 <header id="header">
-  <h1>Westminster Pint Index</h1>
+  <h1 class="header-title">Westminster Pint Index</h1>
   <div id="header-underline"></div>
 
-  <!-- Ticker -->
   <div id="ticker-container">
     <div id="ticker"></div>
   </div>
 </header>
 
-<!-- CHEAPEST PINT FULL-WIDTH TILE -->
+<!-- CHEAPEST PINT TILE -->
 <section id="cheapestTile">
   <div id="cheapestTrend" class="trend-strip"></div>
   <div id="cheapestContent"></div>
 </section>
 
-<!-- ADD DATA TILE (ACCORDION) -->
+<!-- ADD DATA TILE -->
 <section class="tile">
-  <h2>➕ Add Data</h2>
+  <h2 class="tile-title">➕ Add Data</h2>
 
   <div class="accordion">
 
-    <!-- Add Pub -->
     <div class="accordion-item">
       <button class="accordion-header">🏛️ Add Pub</button>
       <div class="accordion-body">
@@ -43,7 +41,6 @@
       </div>
     </div>
 
-    <!-- Add Pint -->
     <div class="accordion-item">
       <button class="accordion-header">🍺 Add Pint Type</button>
       <div class="accordion-body">
@@ -53,7 +50,6 @@
       </div>
     </div>
 
-    <!-- Add Price -->
     <div class="accordion-item">
       <button class="accordion-header">💷 Add Pint Price</button>
       <div class="accordion-body">
@@ -69,7 +65,7 @@
 
 <!-- MARKET TABLE -->
 <section class="tile">
-  <h2>📊 Market Prices (Top 5 League Table)</h2>
+  <h2 class="tile-title">📊 Market Prices (Top 5 League Table)</h2>
 
   <div class="table-scroll">
     <table id="marketTable">
@@ -90,28 +86,28 @@
 
 <!-- POPULARITY -->
 <section class="tile">
-  <h2>🔥 Market Volume (Popularity)</h2>
+  <h2 class="tile-title">🔥 Market Volume (Popularity)</h2>
   <div id="popularityChartContainer"></div>
 </section>
 
-<!-- PINT INDEX -->
-<section class="tile" id="indexSection">
-  <h2>📈 Pint Market Index</h2>
-  <div id="ppiOutput"></div>
+<!-- INDEX -->
+<section class="tile">
+  <h2 class="tile-title">📈 Pint Market Index</h2>
+  <div id="ppiOutput" class="big-number"></div>
 </section>
 
-<!-- COMPARISON -->
+<!-- COMPARE PINTS -->
 <section class="tile">
-  <h2>⚖️ Compare Pints</h2>
+  <h2 class="tile-title">⚖️ Compare Pints</h2>
   <select id="comparePintA"></select>
   <select id="comparePintB"></select>
   <button id="compareBtn">Compare</button>
   <div id="comparisonResult"></div>
 </section>
 
-<!-- BUDGET PLANNER -->
-<section class="tile" id="budgetPlanner">
-  <h2>💰 Budget Planner</h2>
+<!-- BUDGET -->
+<section class="tile">
+  <h2 class="tile-title">💰 Budget Planner</h2>
   <input id="budgetInput" type="number" placeholder="Enter your budget (£)">
   <button id="budgetBtn">Calculate</button>
   <div id="budgetOutput"></div>
@@ -119,7 +115,7 @@
 
 <!-- RARE PINTS -->
 <section class="tile">
-  <h2>🌟 Rare Pints</h2>
+  <h2 class="tile-title">🌟 Rare Pints</h2>
   <div id="rarePints"></div>
 </section>
 
