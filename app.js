@@ -9,29 +9,31 @@ import {
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+/* Helper: get element */
+const $ = id => document.getElementById(id);
 
 /* ==========================================================
    ON PAGE LOAD
 ========================================================== */
 document.addEventListener("DOMContentLoaded", () => {
 
-  // Add data
-  document.getElementById("addPubBtn").addEventListener("click", addPub);
-  document.getElementById("addPintBtn").addEventListener("click", addPint);
-  document.getElementById("addPriceBtn").addEventListener("click", addPrice);
+  // Add data buttons
+  $("addPubBtn").addEventListener("click", addPub);
+  $("addPintBtn").addEventListener("click", addPint);
+  $("addPriceBtn").addEventListener("click", addPrice);
 
   // Tools
-  document.getElementById("compareBtn").addEventListener("click", comparePints);
-  document.getElementById("budgetBtn").addEventListener("click", calculateBudget);
-  document.getElementById("expandTableBtn").addEventListener("click", toggleTableExpand);
+  $("compareBtn").addEventListener("click", comparePints);
+  $("budgetBtn").addEventListener("click", calculateBudget);
+  $("expandTableBtn").addEventListener("click", toggleTableExpand);
 
   // Admin
-  document.getElementById("adminLockTrigger").addEventListener("click", showAdminPanel);
-  document.getElementById("adminUnlockBtn").addEventListener("click", unlockAdmin);
-  document.getElementById("wipeAllBtn").addEventListener("click", wipeAllData);
-  document.getElementById("wipePricesBtn").addEventListener("click", wipePricesOnly);
+  $("adminLockTrigger").addEventListener("click", showAdminPanel);
+  $("adminUnlockBtn").addEventListener("click", unlockAdmin);
+  $("wipeAllBtn").addEventListener("click", wipeAllData);
+  $("wipePricesBtn").addEventListener("click", wipePricesOnly);
 
-  // Load data
+  // Load dashboard
   loadPubs();
   loadPints();
   loadCheapest();
@@ -50,12 +52,14 @@ document.addEventListener("DOMContentLoaded", () => {
    ADD PUB
 ========================================================== */
 async function addPub() {
-  const name = pubName.value.trim();
-  if (!name) return alert("Enter a pub name");
+  const name = $("pubName").value.trim();
+  const addr = $("pubAddress").value.trim();
+
+  if (!name) return alert("Enter pub name");
 
   await addDoc(collection(db, "pubs"), {
     name,
-    address: pubAddress.value.trim(),
+    address: addr,
     createdAt: serverTimestamp()
   });
 
@@ -67,8 +71,9 @@ async function addPub() {
    ADD PINT
 ========================================================== */
 async function addPint() {
-  const name = pintName.value.trim();
-  const cat = pintCategory.value.trim();
+  const name = $("pintName").value.trim();
+  const cat = $("pintCategory").value.trim();
+
   if (!name || !cat) return alert("Fill all fields");
 
   await addDoc(collection(db, "pintDefinitions"), {
@@ -85,19 +90,20 @@ async function addPint() {
    ADD PRICE
 ========================================================== */
 async function addPrice() {
-  const price = Number(pintPrice.value);
+  const price = Number($("pintPrice").value);
   if (!price || price <= 0) return alert("Enter valid price");
 
   await addDoc(collection(db, "pintPrices"), {
-    pubId: pricePubSelect.value,
-    pintId: pricePintSelect.value,
-    price,
+    pubId: $("pricePubSelect").value,
+    pintId: $("pricePintSelect").value,
+    price: price,
     timestamp: serverTimestamp()
   });
 
   refreshDashboard();
 }
 
+/* Reload everything */
 function refreshDashboard() {
   loadCheapest();
   loadPPI();
@@ -112,57 +118,62 @@ function refreshDashboard() {
 
 
 /* ==========================================================
-   LOAD PUBS & PINTS
+   LOAD PUBS / PINTS
 ========================================================== */
 async function loadPubs() {
   const snap = await getDocs(collection(db, "pubs"));
-  pricePubSelect.innerHTML = "";
+  const sel = $("pricePubSelect");
+  sel.innerHTML = "";
   snap.forEach(doc => {
     const opt = document.createElement("option");
     opt.value = doc.id;
     opt.textContent = doc.data().name;
-    pricePubSelect.appendChild(opt);
+    sel.appendChild(opt);
   });
 }
 
 async function loadPints() {
   const snap = await getDocs(collection(db, "pintDefinitions"));
 
-  [pricePintSelect, comparePintA, comparePintB].forEach(sel => sel.innerHTML = "");
+  const selects = [
+    $("pricePintSelect"),
+    $("comparePintA"),
+    $("comparePintB")
+  ];
+
+  selects.forEach(s => s.innerHTML = "");
 
   snap.forEach(doc => {
     const opt = document.createElement("option");
     opt.value = doc.id;
     opt.textContent = doc.data().name;
 
-    pricePintSelect.appendChild(opt.cloneNode(true));
-    comparePintA.appendChild(opt.cloneNode(true));
-    comparePintB.appendChild(opt.cloneNode(true));
+    selects.forEach(s => s.appendChild(opt.cloneNode(true)));
   });
 }
 
 
 /* ==========================================================
-   HERO CHEAPEST PINT
+   HERO CARD — CHEAPEST PINT
 ========================================================== */
 async function loadCheapest() {
-
   const qPrice = query(collection(db, "pintPrices"), orderBy("price"), limit(1));
-  const priceSnap = await getDocs(qPrice);
+  const snap = await getDocs(qPrice);
 
-  if (priceSnap.empty) {
-    hero-content.innerHTML = "<p>No prices yet.</p>";
+  if (snap.empty) {
+    $("hero-content").innerHTML = "<p>No prices yet.</p>";
     return;
   }
 
-  const cheapest = priceSnap.docs[0].data();
+  const cheapest = snap.docs[0].data();
 
   const pints = await getDocs(collection(db, "pintDefinitions"));
   const pubs  = await getDocs(collection(db, "pubs"));
-  const pint = pints.docs.find(p => p.id === cheapest.pintId)?.data();
-  const pub  = pubs.docs.find(p => p.id === cheapest.pubId)?.data();
 
-  hero-content.innerHTML = `
+  const pint = pints.docs.find(x => x.id === cheapest.pintId)?.data();
+  const pub  = pubs.docs.find(x => x.id === cheapest.pubId)?.data();
+
+  $("hero-content").innerHTML = `
     <div class="cheapest-name">🍺 ${pint.name} (${pint.category})</div>
     <div class="cheapest-price">£${cheapest.price}</div>
     <div class="cheapest-pub">📍 ${pub.name}</div>
@@ -176,8 +187,11 @@ async function loadCheapest() {
 ========================================================== */
 async function loadPPI() {
   const snap = await getDocs(collection(db, "pintPrices"));
-  const avg = (snap.docs.reduce((a,b)=>a + b.data().price, 0) / snap.size || 0).toFixed(2);
-  ppiOutput.textContent = `£${avg}`;
+  const avg = (
+    snap.docs.reduce((a,b)=>a + b.data().price, 0) / snap.size || 0
+  ).toFixed(2);
+
+  $("ppiOutput").textContent = `£${avg}`;
 }
 
 
@@ -193,12 +207,15 @@ async function loadPopularityChart() {
   priceSnap.forEach(pr => counts[pr.data().pintId]++);
 
   const sorted = pintSnap.docs
-    .map(p => ({ name: p.data().name, count: counts[p.id] }))
-    .sort((a,b) => b.count - a.count);
+    .map(doc => ({
+      name: doc.data().name,
+      count: counts[doc.id]
+    }))
+    .sort((a,b)=>b.count-a.count);
 
   const max = sorted[0]?.count || 1;
 
-  popularityChartContainer.innerHTML = sorted.map(item => `
+  $("popularityChartContainer").innerHTML = sorted.map(item => `
     <div class="poll-label">${item.name}</div>
     <div class="poll-bar-wrapper">
       <div class="poll-bar" style="width:${(item.count/max)*100}%"></div>
@@ -214,11 +231,10 @@ let tableExpanded = false;
 
 async function loadMarketTable() {
   const prices = await getDocs(collection(db, "pintPrices"));
-  const pints = await getDocs(collection(db, "pintDefinitions"));
-  const pubs  = await getDocs(collection(db, "pubs"));
+  const pints  = await getDocs(collection(db, "pintDefinitions"));
+  const pubs   = await getDocs(collection(db, "pubs"));
 
   const pintMap = {}, pubMap = {};
-
   pints.forEach(p => pintMap[p.id] = p.data());
   pubs.forEach(p => pubMap[p.id] = p.data());
 
@@ -229,28 +245,28 @@ async function loadMarketTable() {
       pub: pubMap[d.pubId]?.name,
       price: d.price
     };
-  });
+  }).sort((a,b)=>a.price - b.price);
 
-  rows.sort((a,b)=>a.price - b.price);
-
-  const tbody = marketTableBody;
+  const tbody = $("marketTableBody");
   tbody.innerHTML = "";
 
-  (tableExpanded ? rows : rows.slice(0,5)).forEach((r,i) => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
+  const slice = tableExpanded ? rows : rows.slice(0,5);
+
+  slice.forEach((r,i) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
       <td>${i+1}</td>
       <td>${r.pint}</td>
       <td>${r.pub}</td>
       <td>£${r.price.toFixed(2)}</td>
     `;
-    tbody.appendChild(row);
+    tbody.appendChild(tr);
   });
 }
 
 function toggleTableExpand() {
   tableExpanded = !tableExpanded;
-  expandTableBtn.textContent = tableExpanded ? "Show Top 5 ▲" : "Show Full Table ▼";
+  $("expandTableBtn").textContent = tableExpanded ? "Show Top 5 ▲" : "Show Full Table ▼";
   loadMarketTable();
 }
 
@@ -261,7 +277,7 @@ function toggleTableExpand() {
 async function loadPriceDistribution() {
   const snap = await getDocs(collection(db, "pintPrices"));
   if (snap.empty) {
-    priceDistribution.innerHTML = "No data yet";
+    $("priceDistribution").innerHTML = "No data yet";
     return;
   }
 
@@ -270,12 +286,12 @@ async function loadPriceDistribution() {
 
   values.forEach(v => {
     const key = `£${Math.floor(v)}–£${Math.floor(v)+1}`;
-    buckets[key] = (buckets[key]||0) + 1;
+    buckets[key] = (buckets[key]||0)+1;
   });
 
   const max = Math.max(...Object.values(buckets));
 
-  priceDistribution.innerHTML = Object.entries(buckets).map(([range,count]) => `
+  $("priceDistribution").innerHTML = Object.entries(buckets).map(([range,count])=>`
     <div class="dist-label">${range}</div>
     <div class="dist-bar-wrapper">
       <div class="dist-bar" style="width:${(count/max)*100}%"></div>
@@ -289,15 +305,15 @@ async function loadPriceDistribution() {
 ========================================================== */
 async function loadCheapestPubs() {
   const prices = await getDocs(collection(db, "pintPrices"));
-  const pubsSnap = await getDocs(collection(db, "pubs"));
+  const pubs   = await getDocs(collection(db, "pubs"));
 
   if (prices.empty) {
-    cheapestPubs.innerHTML = "<p>No data yet.</p>";
+    $("cheapestPubs").innerHTML = "<p>No data yet</p>";
     return;
   }
 
   const pubNames = {};
-  pubsSnap.forEach(p => pubNames[p.id] = p.data().name);
+  pubs.forEach(p => pubNames[p.id] = p.data().name);
 
   const groups = {};
 
@@ -308,13 +324,14 @@ async function loadCheapestPubs() {
   });
 
   const sorted = Object.entries(groups)
-    .map(([id,vals]) => ({
-      pub: pubNames[id],
-      avg: vals.reduce((a,b)=>a+b,0) / vals.length
-    })).sort((a,b)=>a.avg - b.avg)
-      .slice(0,5);
+    .map(([pubId,vals]) => ({
+      pub: pubNames[pubId],
+      avg: vals.reduce((a,b)=>a+b,0)/vals.length
+    }))
+    .sort((a,b)=>a.avg-b.avg)
+    .slice(0,5);
 
-  cheapestPubs.innerHTML = sorted.map((p,i) => `
+  $("cheapestPubs").innerHTML = sorted.map((p,i)=>`
     <div class="pub-row">
       <span class="pub-rank">${i+1}.</span> ${p.pub} — £${p.avg.toFixed(2)}
     </div>
@@ -331,7 +348,7 @@ async function loadRecommendations() {
   const pubs   = await getDocs(collection(db, "pubs"));
 
   if (prices.empty) {
-    recommendations.innerHTML = "<p>No data yet.</p>";
+    $("recommendations").innerHTML = "<p>No data yet</p>";
     return;
   }
 
@@ -339,15 +356,16 @@ async function loadRecommendations() {
   pints.forEach(p => pintMap[p.id] = p.data());
   pubs.forEach(p => pubMap[p.id] = p.data());
 
-  const values = prices.docs.map(d => d.data());
+  const vals = prices.docs.map(d => d.data());
 
-  const cheapest = values.sort((a,b)=>a.price-b.price)[0];
+  const cheapest = [...vals].sort((a,b)=>a.price-b.price)[0];
 
+  // trending
   const freq = {};
-  values.forEach(v => freq[v.pintId] = (freq[v.pintId]||0)+1);
-  const trending = Object.keys(freq).sort((a,b)=>freq[b]-freq[a])[0];
+  vals.forEach(v => freq[v.pintId]=(freq[v.pintId]||0)+1);
+  const trendingId = Object.keys(freq).sort((a,b)=>freq[b]-freq[a])[0];
 
-  recommendations.innerHTML = `
+  $("recommendations").innerHTML = `
     <div class="rec-item">
       ⭐ Cheapest Pint:<br>
       <strong>${pintMap[cheapest.pintId].name}</strong> @ ${pubMap[cheapest.pubId].name} (£${cheapest.price})
@@ -355,12 +373,12 @@ async function loadRecommendations() {
 
     <div class="rec-item">
       📈 Trending Pint:<br>
-      <strong>${pintMap[trending].name}</strong> (most submissions)
+      <strong>${pintMap[trendingId].name}</strong> (most logged)
     </div>
 
     <div class="rec-item">
       💡 Best Value:<br>
-      <strong>${pintMap[cheapest.pintId].name}</strong> (MVP logic)
+      <strong>${pintMap[cheapest.pintId].name}</strong>
     </div>
   `;
 }
@@ -374,11 +392,10 @@ async function loadRarePints() {
   const prices = await getDocs(collection(db, "pintPrices"));
   const pubs = await getDocs(collection(db, "pubs"));
 
-  const pubMap = {};
-  pubs.forEach(p => pubMap[p.id] = p.data().name);
-
+  const pubMap = {}; pubs.forEach(p=>pubMap[p.id]=p.data().name);
   const count = {}, last = {};
-  pints.forEach(p => count[p.id] = 0);
+
+  pints.forEach(p => count[p.id]=0);
 
   prices.forEach(pr => {
     const d = pr.data();
@@ -386,16 +403,19 @@ async function loadRarePints() {
     last[d.pintId] = d;
   });
 
-  const rare = Object.keys(count).filter(id => count[id] < 3);
+  const rare = Object.keys(count).filter(id=>count[id] < 3);
 
-  rarePints.innerHTML = rare.map(id => `
-    <div style="padding:16px;background:#FEF9C3;border-radius:18px;margin-bottom:10px;">
-      <strong>${pints.docs.find(p=>p.id===id).data().name}</strong><br>
-      📍 ${pubMap[last[id]?.pubId] || "Unknown"}<br>
-      £${last[id]?.price || "?"}<br>
-      ⭐ Rare (${count[id]} entries)
-    </div>
-  `).join("");
+  $("rarePints").innerHTML = rare.map(id => {
+    const pint = pints.docs.find(p=>p.id===id).data();
+    return `
+      <div style="padding:16px;background:#FEF9C3;border-radius:18px;margin-bottom:10px;">
+        <strong>${pint.name}</strong><br>
+        📍 ${pubMap[last[id]?.pubId] || "Unknown"}<br>
+        £${last[id]?.price || "?"}<br>
+        ⭐ Rare (${count[id]} entries)
+      </div>
+    `;
+  }).join("");
 }
 
 
@@ -403,7 +423,7 @@ async function loadRarePints() {
    BUDGET PLANNER
 ========================================================== */
 async function calculateBudget() {
-  const budget = Number(budgetInput.value);
+  const budget = Number($("budgetInput").value);
   if (!budget) return alert("Enter budget");
 
   const prices = await getDocs(collection(db, "pintPrices"));
@@ -411,8 +431,8 @@ async function calculateBudget() {
   const pubs   = await getDocs(collection(db, "pubs"));
 
   const pintMap = {}, pubMap = {};
-  pints.forEach(p => pintMap[p.id] = p.data().name);
-  pubs.forEach(p => pubMap[p.id] = p.data().name);
+  pints.forEach(p=>pintMap[p.id]=p.data().name);
+  pubs.forEach(p=>pubMap[p.id]=p.data().name);
 
   const options = prices.docs.map(d => {
     const p = d.data();
@@ -422,19 +442,19 @@ async function calculateBudget() {
       pub: pubMap[p.pubId],
       count,
       total: count * p.price,
-      change: budget - (count * p.price)
+      change: budget - (count*p.price)
     };
-  }).filter(o => o.count > 0)
-    .sort((a,b)=>b.count - a.count);
+  }).filter(o=>o.count>0)
+    .sort((a,b)=>b.count-a.count);
 
   if (!options.length) {
-    budgetOutput.innerHTML = "Budget too low.";
+    $("budgetOutput").innerHTML = "Budget too low.";
     return;
   }
 
   const best = options[0];
 
-  budgetOutput.innerHTML = `
+  $("budgetOutput").innerHTML = `
     Best Option: ${best.count}× ${best.pint} @ ${best.pub}<br>
     Total £${best.total.toFixed(2)} — Change £${best.change.toFixed(2)}
   `;
@@ -449,23 +469,23 @@ async function loadTicker() {
   const pints  = await getDocs(collection(db, "pintDefinitions"));
 
   if (prices.empty) {
-    ticker.innerHTML = "No data yet.";
+    $("ticker").textContent = "No data yet.";
     return;
   }
 
-  const vals = prices.docs.map(d => d.data());
-  const cheapest = vals.sort((a,b)=>a.price-b.price)[0];
-  const expensive = vals.sort((a,b)=>b.price-a.price)[0];
-
-  const avg = (vals.reduce((a,b)=>a+b.price,0) / vals.length).toFixed(2);
+  const vals = prices.docs.map(d=>d.data());
+  const cheapest = [...vals].sort((a,b)=>a.price-b.price)[0];
+  const expensive = [...vals].sort((a,b)=>b.price-a.price)[0];
+  const avg = (
+    vals.reduce((a,b)=>a+b.price,0) / vals.length
+  ).toFixed(2);
 
   const freq = {};
   vals.forEach(v=>freq[v.pintId]=(freq[v.pintId]||0)+1);
-
   const popId = Object.keys(freq).sort((a,b)=>freq[b]-freq[a])[0];
   const popName = pints.docs.find(p=>p.id===popId).data().name;
 
-  ticker.innerHTML = `
+  $("ticker").innerHTML = `
     Cheapest £${cheapest.price} ▼ |
     Index £${avg} |
     Popular: ${popName} |
@@ -475,17 +495,17 @@ async function loadTicker() {
 
 
 /* ==========================================================
-   ADMIN LOCK SYSTEM
+   ADMIN LOCK
 ========================================================== */
 function showAdminPanel() {
-  adminLockPanel.style.display = "block";
+  $("adminLockPanel").style.display = "block";
 }
 
 function unlockAdmin() {
-  const code = adminCodeInput.value.trim();
+  const code = $("adminCodeInput").value.trim();
   if (code === "PINTADMIN2025") {
-    adminTools.style.display = "block";
-    adminLockPanel.style.display = "none";
+    $("adminTools").style.display = "block";
+    $("adminLockPanel").style.display = "none";
   } else {
     alert("Incorrect admin code");
   }
