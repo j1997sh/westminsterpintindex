@@ -1,12 +1,12 @@
 /* ------------------------------
-   GLOBAL
+   GLOBAL FINTECH STYLE
 ------------------------------ */
 body {
   margin: 0;
   padding: 0;
-  background: #F1F5F9; /* Light grey */
-  font-family: 'Inter', sans-serif;
-  color: #0F172A; /* Deep blue */
+  background: #F1F5F9;
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+  color: #0F172A;
 }
 
 /* ------------------------------
@@ -15,15 +15,15 @@ body {
 #header {
   width: 100%;
   background: #0F172A;
-  padding: 18px 12px;
+  padding: 24px 16px;
   text-align: center;
-  color: white;
 }
 
-#header h1 {
+.header-title {
   margin: 0;
-  font-size: 28px;
+  font-size: 34px;
   font-weight: 700;
+  color: white;
 }
 
 #header-underline {
@@ -38,26 +38,25 @@ body {
 ------------------------------ */
 #ticker-container {
   width: 100%;
+  background: #1F2937;
   overflow: hidden;
-  background: #1E293B;
-  padding: 8px 0;
-  white-space: nowrap;
+  padding: 12px 0;
 }
 
 #ticker {
   display: inline-block;
   padding-left: 100%;
-  animation: tickerMove 15s linear infinite;
-  font-size: 16px;
+  white-space: nowrap;
+  font-size: 20px;
   color: white;
+  animation: tickerMove 15s linear infinite;
 }
 
 @keyframes tickerMove {
   from { transform: translateX(0%); }
-  to { transform: translateX(-100%); }
+  to   { transform: translateX(-100%); }
 }
 
-/* Trend colours in ticker */
 .ticker-up { color: #10B981; }
 .ticker-down { color: #EF4444; }
 
@@ -65,55 +64,55 @@ body {
    CHEAPEST TILE
 ------------------------------ */
 #cheapestTile {
-  background: #FACC15;
   width: 100%;
-  padding: 28px 20px;
-  position: relative;
+  background: #FACC15;
+  padding: 32px 20px;
+  margin-top: 0;
   margin-bottom: 20px;
+  border-radius: 0 0 20px 20px;
+  position: relative;
 }
 
 .trend-strip {
-  width: 12px;
-  background: #D1D5DB;
+  width: 14px;
   position: absolute;
   left: 0;
   top: 0;
   bottom: 0;
 }
 
-#cheapestContent {
-  padding-left: 20px;
-}
-
 .cheapest-name {
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 700;
 }
 
 .cheapest-price {
-  font-size: 42px;
+  font-size: 52px;
   font-weight: 800;
   margin: 6px 0;
+  line-height: 1;
 }
 
-.cheapest-pub {
-  font-size: 18px;
-}
-
-.cheapest-trend {
-  font-size: 18px;
-  margin-top: 6px;
+.cheapest-pub, .cheapest-trend {
+  font-size: 20px;
+  margin-top: 8px;
 }
 
 /* ------------------------------
-   TILE
+   TILE CARD
 ------------------------------ */
 .tile {
   background: #FFFFFF;
-  padding: 22px;
-  border-radius: 14px;
-  margin: 16px;
-  box-shadow: 0px 4px 18px rgba(0,0,0,0.05);
+  padding: 32px 24px;
+  margin: 20px 12px;
+  border-radius: 20px;
+  box-shadow: 0 4px 22px rgba(0,0,0,0.06);
+}
+
+.tile-title {
+  font-size: 26px;
+  margin-bottom: 20px;
+  font-weight: 700;
 }
 
 /* ------------------------------
@@ -121,21 +120,20 @@ body {
 ------------------------------ */
 .accordion-header {
   width: 100%;
-  padding: 16px;
+  padding: 18px;
   background: #E2E8F0;
   border: none;
-  font-size: 18px;
+  border-radius: 20px;
+  font-size: 20px;
   text-align: left;
-  border-radius: 8px;
-  cursor: pointer;
 }
 
 .accordion-body {
   display: none;
-  padding: 16px;
+  margin-top: 12px;
+  padding: 20px;
+  border-radius: 16px;
   background: #F8FAFC;
-  border-radius: 8px;
-  margin-top: 10px;
 }
 
 /* ------------------------------
@@ -143,30 +141,25 @@ body {
 ------------------------------ */
 input, select {
   width: 100%;
-  padding: 14px;
-  margin-bottom: 16px;
+  padding: 18px;
+  margin-bottom: 18px;
+  border-radius: 16px;
   border: 1px solid #CBD5E1;
-  border-radius: 8px;
-  font-size: 16px;
+  font-size: 20px;
 }
 
 button {
   width: 100%;
-  padding: 14px;
+  padding: 18px;
+  font-size: 20px;
   background: #2563EB;
   color: white;
-  font-size: 18px;
   border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-button:hover {
-  background: #1D4ED8;
+  border-radius: 16px;
 }
 
 /* ------------------------------
-   FOOTBALL LEAGUE TABLE
+   TABLE (LEAGUE STYLE)
 ------------------------------ */
 .table-scroll {
   overflow-x: auto;
@@ -175,7 +168,7 @@ button:hover {
 table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 500px;
+  min-width: 600px;
 }
 
 thead {
@@ -184,9 +177,8 @@ thead {
 }
 
 th, td {
-  padding: 14px;
-  text-align: left;
-  font-size: 16px;
+  padding: 18px;
+  font-size: 20px;
 }
 
 tbody tr:nth-child(even) {
@@ -194,34 +186,32 @@ tbody tr:nth-child(even) {
 }
 
 .expand-btn {
-  margin-top: 14px;
+  margin-top: 20px;
   background: #0F172A;
-  color: white;
+  border-radius: 16px;
+  font-size: 20px;
+  padding: 18px;
 }
 
 /* ------------------------------
    POPULARITY
 ------------------------------ */
-.poll-bar-container {
-  margin: 14px 0;
-}
-
-.poll-label {
-  font-weight: 600;
-  margin-bottom: 4px;
-}
-
 .poll-bar-wrapper {
   width: 100%;
-  height: 24px;
-  background: #CBD5E1;
-  border-radius: 12px;
+  height: 26px;
+  background: #D1D5DB;
+  border-radius: 20px;
 }
 
 .poll-bar {
   height: 100%;
   background: #2563EB;
-  border-radius: 12px;
+  border-radius: 20px;
+}
+
+.poll-label {
+  font-size: 20px;
+  margin-bottom: 8px;
 }
 
 /* ------------------------------
@@ -230,7 +220,8 @@ tbody tr:nth-child(even) {
 .footer {
   background: #0F172A;
   color: white;
+  padding: 28px;
   text-align: center;
-  padding: 20px;
-  margin-top: 20px;
+  font-size: 20px;
+  margin-top: 40px;
 }
