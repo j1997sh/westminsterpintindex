@@ -1,7 +1,6 @@
 /* ==========================================================
-   GLOBAL BASE STYLES — Apple-style light dashboard
+   GLOBAL BASE — Apple-style Dashboard
 ========================================================== */
-
 * {
   box-sizing: border-box;
 }
@@ -9,25 +8,24 @@
 body {
   margin: 0;
   padding: 0;
-  background: #F5F6F8; /* Light iOS dashboard grey */
-  font-family: -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
-  color: #0F172A; /* Deep slate blue */
+  background: #F5F6F8;
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+  color: #0F172A;
 }
 
-h1, h2, h3, h4, p {
+h1, h2, h3, p {
   margin: 0;
+  font-weight: 600;
 }
 
 
 /* ==========================================================
-   HEADER + TICKER
+   HEADER & TICKER
 ========================================================== */
-
 #header {
-  width: 100%;
-  background: #FFFFFF;
-  padding: 24px 10px 12px 10px;
   text-align: center;
+  background: white;
+  padding: 24px 0 10px;
   border-bottom: 1px solid #E5E7EB;
 }
 
@@ -39,116 +37,102 @@ h1, h2, h3, h4, p {
 #header-underline {
   width: 100%;
   height: 3px;
-  background: #FACC15; /* Gold highlight */
-  margin-top: 10px;
+  background: #FACC15;
+  margin-top: 12px;
 }
 
 #ticker-container {
-  width: 100%;
+  background: white;
   padding: 10px 0;
-  overflow: hidden;
   border-top: 1px solid #E5E7EB;
-  background: #FFFFFF;
+  overflow: hidden;
 }
 
 #ticker {
   display: inline-block;
-  padding-left: 100%;
   white-space: nowrap;
+  padding-left: 100%;
   animation: tickerMove 15s linear infinite;
   font-size: 18px;
-  color: #0F172A;
   font-weight: 500;
 }
-
 @keyframes tickerMove {
-  from { transform: translateX(0%); }
-  to   { transform: translateX(-100%); }
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
 }
 
-.ticker-up { color: #16A34A; }   /* Green */
-.ticker-down { color: #DC2626; } /* Red */
+.ticker-up   { color: #16A34A; }
+.ticker-down { color: #DC2626; }
 
 
 /* ==========================================================
    SECTION HEADERS
 ========================================================== */
-
 .section-header {
-  width: 100%;
-  padding: 10px 14px;
   font-size: 22px;
   font-weight: 800;
-  margin: 28px 0 14px 0;
-  color: #111827;
+  padding: 10px 12px;
+  margin-top: 26px;
 }
 
 
 /* ==========================================================
-   HERO CHEAPEST PINT — Full-bleed card
+   HERO CHEAPEST PINT — Full-width card
 ========================================================== */
-
 #hero-container {
-  width: 100%;
   background: #FACC15;
-  padding: 32px 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
   border-radius: 0 0 22px 22px;
-  position: relative;
+  padding: 32px 20px;
   margin-bottom: 20px;
-  box-shadow: 0 8px 22px rgba(0,0,0,0.10);
+  position: relative;
 }
 
 #hero-trend-strip {
   width: 12px;
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
   background: #D1D5DB;
+  position: absolute;
+  top: 0; bottom: 0; left: 0;
   border-radius: 0 0 0 22px;
 }
 
 #hero-content {
-  padding-left: 20px;
+  padding-left: 18px;
 }
 
-.cheapest-name {
-  font-size: 22px;
-  font-weight: 700;
-}
-
-.cheapest-price {
-  font-size: 52px;
-  font-weight: 800;
-  margin: 8px 0;
-}
-
-.cheapest-pub,
-.cheapest-trend {
-  font-size: 20px;
-  margin-top: 8px;
-}
+.cheapest-name  { font-size: 22px; font-weight: 700; }
+.cheapest-price { font-size: 50px; font-weight: 800; margin: 8px 0; }
+.cheapest-pub   { font-size: 20px; margin-top: 8px; }
+.cheapest-trend { font-size: 20px; margin-top: 6px; }
 
 
 /* ==========================================================
-   DASHBOARD GRID — TWO COLUMN ALWAYS
+   DASHBOARD GRID — ALWAYS 2 COLUMNS
 ========================================================== */
-
 .dashboard-row {
   display: flex;
   flex-direction: row;
   gap: 10px;
   width: 100%;
+  padding: 0;
   margin-bottom: 14px;
-  padding: 0; /* full-bleed layout */
 }
 
 .dash-card {
-  width: 50%; /* ALWAYS two columns */
-  background: #FFFFFF;
-  padding: 24px;
+  width: 50%;
+  background: white;
   border-radius: 22px;
   box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  padding: 24px;
+}
+
+.full-card {
+  width: 100%;
+  background: white;
+  border-radius: 22px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  padding: 24px;
+  margin-bottom: 18px;
 }
 
 .card-title {
@@ -158,46 +142,31 @@ h1, h2, h3, h4, p {
 }
 
 .card-big-number {
-  font-size: 34px;
+  font-size: 36px;
   font-weight: 800;
-}
-
-
-/* ==========================================================
-   FULL WIDTH CARDS
-========================================================== */
-
-.full-card {
-  width: 100%;
-  background: #FFFFFF;
-  padding: 24px;
-  margin-bottom: 18px;
-  border-radius: 22px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
 }
 
 
 /* ==========================================================
    INPUTS & BUTTONS
 ========================================================== */
-
 input, select {
   width: 100%;
   padding: 18px;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
+  font-size: 18px;
   border-radius: 14px;
   border: 1px solid #D1D5DB;
-  font-size: 18px;
   background: white;
 }
 
 button {
   width: 100%;
   padding: 16px;
-  border-radius: 14px;
-  border: none;
   font-size: 18px;
   font-weight: 600;
+  border: none;
+  border-radius: 14px;
   background: #2563EB;
   color: white;
 }
@@ -206,13 +175,16 @@ button:hover {
   background: #1D4ED8;
 }
 
+.danger-btn {
+  background: #DC2626 !important;
+  color: white;
+}
+
 
 /* ==========================================================
    MARKET TABLE
 ========================================================== */
-
 .table-scroll {
-  width: 100%;
   overflow-x: auto;
 }
 
@@ -237,120 +209,64 @@ td {
 }
 
 .expand-btn {
-  margin-top: 14px;
-  padding: 16px;
-  background: #0F172A;
-  color: white;
-  border-radius: 14px;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-
-/* ==========================================================
-   POPULARITY (horizontal bars)
-========================================================== */
-
-.poll-label {
-  font-size: 18px;
-  margin-bottom: 4px;
-  font-weight: 500;
-}
-
-.poll-bar-wrapper {
-  width: 100%;
-  height: 22px;
-  background: #E5E7EB;
-  border-radius: 14px;
-  margin-bottom: 14px;
-}
-
-.poll-bar {
-  height: 100%;
-  background: #2563EB;
+  margin-top: 16px;
   border-radius: 14px;
 }
 
 
 /* ==========================================================
-   PRICE DISTRIBUTION (BBC-style horizontal bars)
+   POLL / DISTRIBUTION BARS
 ========================================================== */
-
-#priceDistribution .dist-label {
+.poll-label, .dist-label {
   font-size: 18px;
   margin-bottom: 6px;
   font-weight: 500;
 }
 
+.poll-bar-wrapper,
 .dist-bar-wrapper {
-  width: 100%;
-  height: 20px;
   background: #E5E7EB;
+  height: 20px;
+  width: 100%;
   border-radius: 14px;
   margin-bottom: 12px;
 }
 
-.dist-bar {
-  height: 100%;
-  background: #10B981; /* green */
-  border-radius: 14px;
-}
+.poll-bar { background: #2563EB; height: 100%; border-radius: 14px; }
+.dist-bar { background: #10B981; height: 100%; border-radius: 14px; }
 
 
 /* ==========================================================
-   CHEAPEST PUBS LEADERBOARD
+   CHEAPEST PUBS
 ========================================================== */
-
-#cheapestPubs .pub-row {
+.pub-row {
+  padding: 12px 0;
   font-size: 18px;
-  padding: 10px 0;
   border-bottom: 1px solid #E5E7EB;
 }
-
-#cheapestPubs .pub-row:last-child {
-  border-bottom: none;
-}
-
-.pub-rank {
-  font-weight: 700;
-  margin-right: 8px;
-}
+.pub-row:last-child { border-bottom: none; }
+.pub-rank { font-weight: 700; margin-right: 10px; }
 
 
 /* ==========================================================
-   RECOMMENDATIONS BLOCK
+   ADMIN LOCK
 ========================================================== */
-
-#recommendations .rec-item {
-  margin-bottom: 14px;
-  font-size: 18px;
-}
-
-#recommendations .rec-item strong {
-  font-weight: 700;
-}
-
-
-/* ==========================================================
-   CARD RESULT TEXT (Compare, Budget etc.)
-========================================================== */
-
-.card-result {
-  margin-top: 16px;
-  font-size: 18px;
-  line-height: 1.5;
+#adminLockTrigger {
+  text-align: center;
+  font-size: 14px;
+  color: #9CA3AF;
+  margin: 22px 0;
+  cursor: pointer;
 }
 
 
 /* ==========================================================
    FOOTER
 ========================================================== */
-
 #footer {
-  width: 100%;
+  text-align: center;
   padding: 24px;
   background: #F3F4F6;
-  text-align: center;
+  margin-top: 28px;
   font-size: 16px;
-  margin-top: 30px;
 }
