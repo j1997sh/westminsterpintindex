@@ -1,0 +1,204 @@
+/* ----------------------------------------------------
+   GLOBAL RESET & BASE
+---------------------------------------------------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: #F5F1E8; /* Cream Pub Background */
+  color: #1F2A44;      /* Westminster Navy */
+  padding: 40px;
+  line-height: 1.6;
+}
+
+h1, h2, h3 {
+  font-family: 'Playfair Display', serif; /* Political Serif */
+  margin-bottom: 16px;
+}
+
+section {
+  margin-bottom: 60px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid #D8DCE1;
+}
+
+button {
+  background: #8B2E2E; /* Pub Burgundy */
+  color: white;
+  padding: 10px 18px;
+  font-size: 15px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+button:hover {
+  background: #6E2323;
+}
+
+/* ----------------------------------------------------
+   HEADER
+---------------------------------------------------- */
+h1 {
+  font-size: 42px;
+  margin-bottom: 10px;
+}
+
+p {
+  font-size: 18px;
+  margin-bottom: 30px;
+}
+
+/* ----------------------------------------------------
+   INPUTS & FORMS
+---------------------------------------------------- */
+input, select {
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  border: 1px solid #D8DCE1;
+  border-radius: 6px;
+  width: 100%;
+  max-width: 320px;
+  font-size: 15px;
+}
+
+/* Cards for Add Data area */
+#addData > div {
+  background: white;
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  max-width: 450px;
+}
+
+/* ----------------------------------------------------
+   CHEAPEST PINT
+---------------------------------------------------- */
+#cheapestPintSection {
+  background: #C9A227; /* Westminster Gold */
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  margin-bottom: 50px;
+}
+
+#cheapestPint {
+  font-size: 22px;
+  font-weight: bold;
+  color: #1F2A44;
+}
+
+/* ----------------------------------------------------
+   LEAGUE TABLE
+---------------------------------------------------- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  font-size: 15px;
+}
+
+thead {
+  background: #1F2A44;
+  color: white;
+}
+
+thead th {
+  padding: 14px;
+  font-weight: 600;
+  text-align: left;
+}
+
+tbody tr {
+  border-bottom: 1px solid #E0E0E0;
+}
+
+tbody tr:hover {
+  background: #F4EFE4;
+}
+
+td {
+  padding: 14px;
+}
+
+/* Monospace for prices */
+td:nth-child(4) {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 16px;
+}
+
+/* ----------------------------------------------------
+   POPULARITY CHART
+---------------------------------------------------- */
+#popularityChart {
+  max-width: 700px;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* ----------------------------------------------------
+   PRICE INDEX
+---------------------------------------------------- */
+#indexSection {
+  background: white;
+  padding: 20px;
+  max-width: 500px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+#ppiOutput {
+  font-size: 24px;
+  font-weight: bold;
+  color: #1F2A44;
+}
+
+/* ----------------------------------------------------
+   COMPARISON TOOL
+---------------------------------------------------- */
+#comparisonResult {
+  background: #FDFBF5;
+  padding: 20px;
+  margin-top: 20px;
+  border-left: 4px solid #1F2A44;
+  border-radius: 4px;
+  font-size: 16px;
+  max-width: 500px;
+}
+
+/* ----------------------------------------------------
+   RARE PINTS
+---------------------------------------------------- */
+#rarePints div {
+  background: #FFF;
+  padding: 16px;
+  margin: 14px 0;
+  border-radius: 6px;
+  border-left: 6px solid #C9A227; /* Gold stripe for rarity */
+  box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+  max-width: 600px;
+}
+
+/* ----------------------------------------------------
+   FOOTER
+---------------------------------------------------- */
+footer {
+  text-align: center;
+  margin-top: 60px;
+  padding: 20px;
+  color: white;
+  background: #1F2A44;
+  border-radius: 8px;
+  font-size: 14px;
+}
