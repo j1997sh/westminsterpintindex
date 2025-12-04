@@ -3,7 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <title>🍺 Westminster Political Pint Market</title>
+
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Styles -->
   <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -22,21 +26,21 @@
   <section id="addData">
     <h2>➕ Add Data</h2>
 
-    <div>
+    <div class="card">
       <h3>🏰 Add Pub</h3>
       <input id="pubName" placeholder="Pub name">
       <input id="pubAddress" placeholder="Address">
       <button id="addPubBtn">Add Pub</button>
     </div>
 
-    <div>
+    <div class="card">
       <h3>🍺 Add Pint Type</h3>
       <input id="pintName" placeholder="Pint name">
       <input id="pintCategory" placeholder="Category (Lager, IPA, etc)">
       <button id="addPintBtn">Add Pint</button>
     </div>
 
-    <div>
+    <div class="card">
       <h3>💷 Add Pint Price</h3>
       <select id="pricePubSelect"></select>
       <select id="pricePintSelect"></select>
@@ -79,10 +83,21 @@
     <select id="comparePintA"></select>
     <select id="comparePintB"></select>
     <button id="compareBtn">Compare</button>
+
     <div id="comparisonResult"></div>
   </section>
 
-  <!-- SECTION 7: RARE PINTS -->
+  <!-- SECTION 7: BUDGET PLANNER -->
+  <section id="budgetPlanner">
+    <h2>💰 Budget Planner</h2>
+
+    <input id="budgetInput" type="number" placeholder="Enter your budget (£)">
+    <button id="budgetBtn">Calculate</button>
+
+    <div id="budgetOutput"></div>
+  </section>
+
+  <!-- SECTION 8: RARE PINTS -->
   <section>
     <h2>🌟 Rare Pints of Westminster</h2>
     <div id="rarePints"></div>
@@ -92,7 +107,8 @@
     WestminsterPints © 2025 🍺 Powered by Firestore
   </footer>
 
-  <!-- FIXED SCRIPT PATHS 🚀 -->
+
+  <!-- FIXED SCRIPT PATHS -->
   <script type="module" src="firebase.js"></script>
   <script type="module" src="app.js"></script>
 
