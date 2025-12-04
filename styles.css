@@ -1,272 +1,97 @@
-/* ==========================================================
-   GLOBAL BASE — Apple-style Dashboard
-========================================================== */
-* {
-  box-sizing: border-box;
+/* ----------------------------- */
+/* GLOBAL MOBILE FIXES          */
+/* ----------------------------- */
+
+@media (max-width: 700px) {
+  body {
+    padding: 0 10px;
+  }
+  .dashboard-row {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+  .dash-card, .full-card {
+    padding: 16px !important;
+    border-radius: 16px !important;
+  }
+  input, select, button {
+    font-size: 1rem !important;
+  }
 }
 
-body {
-  margin: 0;
-  padding: 0;
-  background: #F5F6F8;
-  font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
-  color: #0F172A;
-}
+/* ----------------------------- */
+/* COMPARE PINTS — New Layout    */
+/* ----------------------------- */
 
-h1, h2, h3, p {
-  margin: 0;
-  font-weight: 600;
-}
-
-
-/* ==========================================================
-   HEADER & TICKER
-========================================================== */
-#header {
-  text-align: center;
-  background: white;
-  padding: 24px 0 10px;
-  border-bottom: 1px solid #E5E7EB;
-}
-
-#header-title {
-  font-size: 32px;
-  font-weight: 800;
-}
-
-#header-underline {
+#comparePintA, #comparePintB {
+  margin-bottom: 12px;
+  padding: 12px;
+  border-radius: 12px;
   width: 100%;
-  height: 3px;
-  background: #FACC15;
+  background: #FFF;
+  border: 1px solid #DDD;
+  font-size: 1rem;
+}
+
+#comparisonResult {
   margin-top: 12px;
+  background: #F7F9FF;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  line-height: 1.4;
 }
 
-#ticker-container {
-  background: white;
-  padding: 10px 0;
-  border-top: 1px solid #E5E7EB;
-  overflow: hidden;
-}
+/* ----------------------------- */
+/* BUDGET PLANNER — New Layout   */
+/* ----------------------------- */
 
-#ticker {
-  display: inline-block;
-  white-space: nowrap;
-  padding-left: 100%;
-  animation: tickerMove 15s linear infinite;
-  font-size: 18px;
-  font-weight: 500;
-}
-@keyframes tickerMove {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-100%); }
-}
-
-.ticker-up   { color: #16A34A; }
-.ticker-down { color: #DC2626; }
-
-
-/* ==========================================================
-   SECTION HEADERS
-========================================================== */
-.section-header {
-  font-size: 22px;
-  font-weight: 800;
-  padding: 10px 12px;
-  margin-top: 26px;
-}
-
-
-/* ==========================================================
-   HERO CHEAPEST PINT — Full-width card
-========================================================== */
-#hero-container {
-  background: #FACC15;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-  border-radius: 0 0 22px 22px;
-  padding: 32px 20px;
-  margin-bottom: 20px;
-  position: relative;
-}
-
-#hero-trend-strip {
-  width: 12px;
-  background: #D1D5DB;
-  position: absolute;
-  top: 0; bottom: 0; left: 0;
-  border-radius: 0 0 0 22px;
-}
-
-#hero-content {
-  padding-left: 18px;
-}
-
-.cheapest-name  { font-size: 22px; font-weight: 700; }
-.cheapest-price { font-size: 50px; font-weight: 800; margin: 8px 0; }
-.cheapest-pub   { font-size: 20px; margin-top: 8px; }
-.cheapest-trend { font-size: 20px; margin-top: 6px; }
-
-
-/* ==========================================================
-   DASHBOARD GRID — ALWAYS 2 COLUMNS
-========================================================== */
-.dashboard-row {
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
+#budgetInput {
+  padding: 12px;
+  border-radius: 12px;
   width: 100%;
-  padding: 0;
-  margin-bottom: 14px;
-}
-
-.dash-card {
-  width: 50%;
-  background: white;
-  border-radius: 22px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-  padding: 24px;
-}
-
-.full-card {
-  width: 100%;
-  background: white;
-  border-radius: 22px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-  padding: 24px;
-  margin-bottom: 18px;
-}
-
-.card-title {
-  font-size: 20px;
-  font-weight: 700;
-  margin-bottom: 14px;
-}
-
-.card-big-number {
-  font-size: 36px;
-  font-weight: 800;
-}
-
-
-/* ==========================================================
-   INPUTS & BUTTONS
-========================================================== */
-input, select {
-  width: 100%;
-  padding: 18px;
-  margin-bottom: 14px;
-  font-size: 18px;
-  border-radius: 14px;
-  border: 1px solid #D1D5DB;
-  background: white;
-}
-
-button {
-  width: 100%;
-  padding: 16px;
-  font-size: 18px;
-  font-weight: 600;
-  border: none;
-  border-radius: 14px;
-  background: #2563EB;
-  color: white;
-}
-
-button:hover {
-  background: #1D4ED8;
-}
-
-.danger-btn {
-  background: #DC2626 !important;
-  color: white;
-}
-
-
-/* ==========================================================
-   MARKET TABLE
-========================================================== */
-.table-scroll {
-  overflow-x: auto;
-}
-
-table {
-  width: 100%;
-  min-width: 600px;
-  border-collapse: collapse;
-}
-
-th {
-  background: #F3F4F6;
-  padding: 16px;
-  font-size: 18px;
-  font-weight: 700;
-  text-align: left;
-}
-
-td {
-  padding: 16px;
-  font-size: 18px;
-  border-bottom: 1px solid #E5E7EB;
-}
-
-.expand-btn {
-  margin-top: 16px;
-  border-radius: 14px;
-}
-
-
-/* ==========================================================
-   POLL / DISTRIBUTION BARS
-========================================================== */
-.poll-label, .dist-label {
-  font-size: 18px;
-  margin-bottom: 6px;
-  font-weight: 500;
-}
-
-.poll-bar-wrapper,
-.dist-bar-wrapper {
-  background: #E5E7EB;
-  height: 20px;
-  width: 100%;
-  border-radius: 14px;
+  background: #FFF;
+  border: 1px solid #DDD;
+  font-size: 1rem;
   margin-bottom: 12px;
 }
 
-.poll-bar { background: #2563EB; height: 100%; border-radius: 14px; }
-.dist-bar { background: #10B981; height: 100%; border-radius: 14px; }
-
-
-/* ==========================================================
-   CHEAPEST PUBS
-========================================================== */
-.pub-row {
-  padding: 12px 0;
-  font-size: 18px;
-  border-bottom: 1px solid #E5E7EB;
-}
-.pub-row:last-child { border-bottom: none; }
-.pub-rank { font-weight: 700; margin-right: 10px; }
-
-
-/* ==========================================================
-   ADMIN LOCK
-========================================================== */
-#adminLockTrigger {
-  text-align: center;
-  font-size: 14px;
-  color: #9CA3AF;
-  margin: 22px 0;
-  cursor: pointer;
+#budgetOutput {
+  margin-top: 12px;
+  background: #FFF7E8;
+  padding: 16px;
+  border-radius: 14px;
+  font-size: 1.15rem;
+  line-height: 1.4;
+  color: #6A4B00;
+  border-left: 4px solid #FFB300;
 }
 
+/* ----------------------------- */
+/* RARE PINTS — Redesigned       */
+/* ----------------------------- */
 
-/* ==========================================================
-   FOOTER
-========================================================== */
-#footer {
-  text-align: center;
-  padding: 24px;
-  background: #F3F4F6;
-  margin-top: 28px;
-  font-size: 16px;
+.rare-card {
+  background: #FEF9C3;
+  border-radius: 18px;
+  padding: 14px;
+  margin-bottom: 12px;
+  border: 1px solid #F2EABC;
 }
+
+.rare-name {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.rare-meta {
+  margin-top: 4px;
+  font-size: 0.95rem;
+  color: #444;
+}
+
+.rare-price {
+  margin-top: 6px;
+  font-weight: 700;
+}
+
