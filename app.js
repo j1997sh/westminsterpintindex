@@ -1,18 +1,23 @@
 import { db } from "./firebase.js";
 import {
-  collection,
-  addDoc,
-  getDocs,
-  query,
-  orderBy,
-  where,
-  limit,
-  serverTimestamp
+  collection, addDoc, getDocs,
+  query, orderBy, limit, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 
-/* ------------------- ADD PUB ------------------- */
-export async function addPub() {
+/* ----------------------------------------------------------
+   INITIALISE EVENT LISTENERS
+---------------------------------------------------------- */
+document.getElementById("addPubBtn").addEventListener("click", addPub);
+document.getElementById("addPintBtn").addEventListener("click", addPint);
+document.getElementById("addPriceBtn").addEventListener("click", addPrice);
+document.getElementById("compareBtn").addEventListener("click", comparePints);
+
+
+/* ----------------------------------------------------------
+   ADD PUB
+---------------------------------------------------------- */
+async function addPub() {
   await addDoc(collection(db, "pubs"), {
     name: document.getElementById("pubName").value,
     address: document.getElementById("pubAddress").value,
@@ -21,8 +26,11 @@ export async function addPub() {
   loadPubs();
 }
 
-/* ------------------- ADD PINT ------------------- */
-export async function addPint() {
+
+/* ----------------------------------------------------------
+   ADD PINT
+---------------------------------------------------------- */
+async function addPint() {
   await addDoc(collection(db, "pintDefinitions"), {
     name: document.getElementById("pintName").value,
     category: document.getElementById("pintCategory").value,
@@ -31,8 +39,11 @@ export async function addPint() {
   loadPints();
 }
 
-/* ------------------- ADD PRICE ------------------- */
-export async function addPrice() {
+
+/* ----------------------------------------------------------
+   ADD PRICE ENTRY
+---------------------------------------------------------- */
+async function addPrice() {
   await addDoc(collection(db, "pintPrices"), {
     pubId: document.getElementById("pricePubSelect").value,
     pintId: document.getElementById("pricePintSelect").value,
@@ -47,183 +58,217 @@ export async function addPrice() {
   loadPPI();
 }
 
-/* ------------------- LOAD PUBS ------------------- */
+
+/* ----------------------------------------------------------
+   LOAD PUBS (FOR SELECT LISTS)
+---------------------------------------------------------- */
 async function loadPubs() {
   const snap = await getDocs(collection(db, "pubs"));
   const select = document.getElementById("pricePubSelect");
   select.innerHTML = "";
 
   snap.forEach(doc => {
-    const opt = document.createElement("option");
+    let opt = document.createElement("option");
     opt.value = doc.id;
     opt.textContent = doc.data().name;
     select.appendChild(opt);
   });
 }
 
-/* ------------------- LOAD PINTS ------------------- */
+
+/* ----------------------------------------------------------
+   LOAD PINT TYPES (FOR SELECT LISTS)
+---------------------------------------------------------- */
 async function loadPints() {
   const snap = await getDocs(collection(db, "pintDefinitions"));
-  const pintSelects = [
+
+  const selects = [
     document.getElementById("pricePintSelect"),
     document.getElementById("comparePintA"),
     document.getElementById("comparePintB")
   ];
 
-  pintSelects.forEach(sel => sel.innerHTML = "");
+  selects.forEach(sel => sel.innerHTML = "");
 
   snap.forEach(doc => {
-    const opt = document.createElement("option");
-    opt.value = doc.id;
-    opt.textContent = doc.data().name;
-    pintSelects.forEach(sel => sel.appendChild(opt.cloneNode(true)));
+    selects.forEach(sel => {
+      const opt = document.createElement("option");
+      opt.value = doc.id;
+      opt.textContent = doc.data().name;
+      sel.appendChild(opt.cloneNode(true));
+    });
   });
 }
 
-/* ------------------- CHEAPEST PINT ------------------- */
+
+/* ----------------------------------------------------------
+   CHEAPEST PINT
+---------------------------------------------------------- */
 async function loadCheapest() {
   const q = query(collection(db, "pintPrices"), orderBy("price"), limit(1));
   const snap = await getDocs(q);
-  const out = document.getElementById("cheapestPint");
 
+  let output = "No pints yet!";
   snap.forEach(doc => {
-    out.innerHTML = `£${doc.data().price} 🍺 <br> Latest pint submitted`;
+    output = `£${doc.data().price} 🍺`;
   });
+
+  document.getElementById("cheapestPint").innerHTML = output;
 }
 
-/* ------------------- LEAGUE TABLE ------------------- */
+
+/* ----------------------------------------------------------
+   LEAGUE TABLE
+---------------------------------------------------------- */
 async function loadLeagueTable() {
   const prices = await getDocs(collection(db, "pintPrices"));
   const pints = await getDocs(collection(db, "pintDefinitions"));
   const pubs = await getDocs(collection(db, "pubs"));
 
-  const pintMap = {};
-  const pubMap = {};
+  const pintMap = {}, pubMap = {};
 
-  pints.forEach(d => pintMap[d.id] = d.data());
-  pubs.forEach(d => pubMap[d.id] = d.data());
+  pints.forEach(p => pintMap[p.id] = p.data());
+  pubs.forEach(p => pubMap[p.id] = p.data());
 
-  const tbody = document.querySelector("#leagueTable tbody");
-  tbody.innerHTML = "";
+  const body = document.querySelector("#leagueTable tbody");
+  body.innerHTML = "";
 
-  prices.forEach(d => {
+  prices.forEach(doc => {
+    const d = doc.data();
     const row = document.createElement("tr");
+
     row.innerHTML = `
-      <td>${pintMap[d.data().pintId].name}</td>
-      <td>${pintMap[d.data().pintId].category}</td>
-      <td>${pubMap[d.data().pubId].name}</td>
-      <td>£${d.data().price}</td>
+      <td>${pintMap[d.pintId].name}</td>
+      <td>${pintMap[d.pintId].category}</td>
+      <td>${pubMap[d.pubId].name}</td>
+      <td>£${d.price}</td>
     `;
-    tbody.appendChild(row);
+    body.appendChild(row);
   });
 }
 
-/* ------------------- POPULARITY CHART ------------------- */
+
+/* ----------------------------------------------------------
+   POPULARITY CHART (BAR)
+---------------------------------------------------------- */
 async function loadPopularityChart() {
   const pints = await getDocs(collection(db, "pintDefinitions"));
   const prices = await getDocs(collection(db, "pintPrices"));
 
-  const countMap = {};
-  pints.forEach(doc => countMap[doc.id] = 0);
-  prices.forEach(doc => countMap[doc.data().pintId]++);
+  const count = {};
+  pints.forEach(p => count[p.id] = 0);
+  prices.forEach(pr => count[pr.data().pintId]++);
 
   const labels = [];
-  const counts = [];
+  const values = [];
 
-  pints.forEach(doc => {
-    labels.push(doc.data().name);
-    counts.push(countMap[doc.id]);
+  pints.forEach(p => {
+    labels.push(p.data().name);
+    values.push(count[p.id]);
   });
 
   new Chart(document.getElementById("popularityChart"), {
     type: "bar",
     data: {
-      labels,
-      datasets: [{ 
+      labels: labels,
+      datasets: [{
         label: "Submissions",
-        data: counts,
+        data: values,
         backgroundColor: "#1F2A44"
       }]
     }
   });
 }
 
-/* ------------------- PRICE INDEX ------------------- */
+
+/* ----------------------------------------------------------
+   PRICE INDEX
+---------------------------------------------------------- */
 async function loadPPI() {
   const prices = await getDocs(collection(db, "pintPrices"));
-
-  let total = 0;
-  let count = 0;
+  let total = 0, count = 0;
 
   prices.forEach(doc => {
     total += doc.data().price;
     count++;
   });
 
-  const index = (total / count).toFixed(2);
-  document.getElementById("ppiOutput").innerHTML = `📈 Index: ${index}`;
+  const index = (total / count || 0).toFixed(2);
+  document.getElementById("ppiOutput").innerHTML = `📈 Index: £${index}`;
 }
 
-/* ------------------- COMPARE PINTS ------------------- */
+
+/* ----------------------------------------------------------
+   PINT COMPARISON
+---------------------------------------------------------- */
 async function comparePints() {
-  const pintA = document.getElementById("comparePintA").value;
-  const pintB = document.getElementById("comparePintB").value;
+  const A = document.getElementById("comparePintA").value;
+  const B = document.getElementById("comparePintB").value;
 
   const prices = await getDocs(collection(db, "pintPrices"));
 
-  let aPrices = [];
-  let bPrices = [];
+  const aVals = [], bVals = [];
 
   prices.forEach(doc => {
-    if (doc.data().pintId === pintA) aPrices.push(doc.data().price);
-    if (doc.data().pintId === pintB) bPrices.push(doc.data().price);
+    if (doc.data().pintId === A) aVals.push(doc.data().price);
+    if (doc.data().pintId === B) bVals.push(doc.data().price);
   });
 
-  const result = document.getElementById("comparisonResult");
-  result.innerHTML = `
-    🍺 Pint A avg: £${(aPrices.reduce((a,b)=>a+b,0)/aPrices.length).toFixed(2)}<br>
-    🍺 Pint B avg: £${(bPrices.reduce((a,b)=>a+b,0)/bPrices.length).toFixed(2)}
+  const avgA = aVals.reduce((a,b)=>a+b,0) / aVals.length || 0;
+  const avgB = bVals.reduce((a,b)=>a+b,0) / bVals.length || 0;
+
+  document.getElementById("comparisonResult").innerHTML = `
+    🍺 Pint A avg: £${avgA.toFixed(2)}<br>
+    🍺 Pint B avg: £${avgB.toFixed(2)}
   `;
 }
 
-/* ------------------- RARE PINTS ------------------- */
+
+/* ----------------------------------------------------------
+   RARE PINTS (SUBMISSIONS < 3)
+---------------------------------------------------------- */
 async function loadRarePints() {
   const pints = await getDocs(collection(db, "pintDefinitions"));
   const prices = await getDocs(collection(db, "pintPrices"));
   const pubs = await getDocs(collection(db, "pubs"));
 
   const pubMap = {};
-  pubs.forEach(p => pubMap[p.id] = p.data().name);
+  pubs.forEach(doc => pubMap[doc.id] = doc.data().name);
 
-  const countMap = {};
-  const latestPrice = {};
+  const count = {}, latest = {};
+  pints.forEach(p => count[p.id] = 0);
 
-  pints.forEach(p => countMap[p.id] = 0);
   prices.forEach(pr => {
-    countMap[pr.data().pintId]++;
-    latestPrice[pr.data().pintId] = pr.data();
+    const d = pr.data();
+    count[d.pintId]++;
+    latest[d.pintId] = d; // latest price entry
   });
 
-  const rare = Object.keys(countMap)
-    .filter(id => countMap[id] < 3)
+  // Filter for rare (< 3 submissions)
+  const rare = Object.keys(count)
+    .filter(id => count[id] < 3)
     .map(id => ({
-      pintId: id,
-      count: countMap[id],
-      price: latestPrice[id]?.price,
-      pub: pubMap[latestPrice[id]?.pubId]
+      name: pints.docs.find(doc => doc.id === id).data().name,
+      price: latest[id]?.price,
+      pub: pubMap[latest[id]?.pubId] || "Unknown Pub",
+      count: count[id]
     }));
 
-  const container = document.getElementById("rarePints");
-  container.innerHTML = rare.map(r => `
+  const out = document.getElementById("rarePints");
+  out.innerHTML = rare.map(r => `
     <div>
-      🌟 ${r.pintId} — ${r.count} submissions <br>
-      📍 ${r.pub} <br>
-      💷 £${r.price}
+      🌟 <strong>${r.name}</strong><br>
+      📍 ${r.pub}<br>
+      💷 £${r.price || "?"}<br>
+      Rarity Score: ⭐${"⭐".repeat(3 - r.count)}
     </div>
-  `).join("<br>");
+  `).join("");
 }
 
-/* ------------------- INIT ------------------- */
+
+/* ----------------------------------------------------------
+   INITIALISE EVERYTHING
+---------------------------------------------------------- */
 loadPubs();
 loadPints();
 loadCheapest();
