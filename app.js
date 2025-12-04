@@ -1,26 +1,50 @@
 import { db } from "./firebase.js";
 import {
-  collection, addDoc, getDocs,
-  query, orderBy, limit, serverTimestamp
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  orderBy,
+  limit,
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 document.addEventListener("DOMContentLoaded", () => {
+
+  // EVENT LISTENERS
   document.getElementById("addPubBtn").addEventListener("click", addPub);
   document.getElementById("addPintBtn").addEventListener("click", addPint);
   document.getElementById("addPriceBtn").addEventListener("click", addPrice);
   document.getElementById("compareBtn").addEventListener("click", comparePints);
   document.getElementById("budgetBtn").addEventListener("click", calculateBudget);
 
+  // ACCORDION LOGIC
+  document.querySelectorAll(".accordion-header").forEach(header => {
+    header.addEventListener("click", () => {
+      const body = header.nextElementSibling;
+      const isOpen = body.style.display === "block";
+
+      // Close all
+      document.querySelectorAll(".accordion-body").forEach(b => b.style.display = "none");
+
+      // Re-open if it wasn’t open already
+      if (!isOpen) body.style.display = "block";
+    });
+  });
+
+  // LOAD DATA
   loadPubs();
   loadPints();
   loadCheapest();
-  loadLeagueTable();
+  loadMarketCards();
   loadPopularityChart();
   loadPPI();
   loadRarePints();
 });
 
-/* ---------------- ADD PUB ------------------ */
+/* ----------------------------------------------------------
+   ADD PUB
+---------------------------------------------------------- */
 async function addPub() {
   await addDoc(collection(db, "pubs"), {
     name: document.getElementById("pubName").value,
@@ -30,7 +54,9 @@ async function addPub() {
   loadPubs();
 }
 
-/* ---------------- ADD PINT ------------------ */
+/* ----------------------------------------------------------
+   ADD PINT
+---------------------------------------------------------- */
 async function addPint() {
   await addDoc(collection(db, "pintDefinitions"), {
     name: document.getElementById("pintName").value,
@@ -40,7 +66,9 @@ async function addPint() {
   loadPints();
 }
 
-/* ---------------- ADD PRICE ------------------ */
+/* ----------------------------------------------------------
+   ADD PRICE
+---------------------------------------------------------- */
 async function addPrice() {
   await addDoc(collection(db, "pintPrices"), {
     pubId: document.getElementById("pricePubSelect").value,
@@ -49,14 +77,16 @@ async function addPrice() {
     timestamp: serverTimestamp()
   });
 
-  loadLeagueTable();
-  loadPopularityChart();
   loadCheapest();
-  loadRarePints();
+  loadMarketCards();
+  loadPopularityChart();
   loadPPI();
+  loadRarePints();
 }
 
-/* ---------------- LOAD PUBS ------------------ */
+/* ----------------------------------------------------------
+   LOAD PUBS INTO SELECT LISTS
+---------------------------------------------------------- */
 async function loadPubs() {
   const snap = await getDocs(collection(db, "pubs"));
   const select = document.getElementById("pricePubSelect");
@@ -70,7 +100,9 @@ async function loadPubs() {
   });
 }
 
-/* ---------------- LOAD PINTS ------------------ */
+/* ----------------------------------------------------------
+   LOAD PINTS INTO SELECT LISTS
+---------------------------------------------------------- */
 async function loadPints() {
   const snap = await getDocs(collection(db, "pintDefinitions"));
 
@@ -92,62 +124,118 @@ async function loadPints() {
   });
 }
 
-/* ---------------- CHEAPEST PINT ------------------ */
+/* ----------------------------------------------------------
+   CHEAPEST PINT — WITH TREND (Stable + Method A)
+---------------------------------------------------------- */
 async function loadCheapest() {
-  const q = query(collection(db, "pintPrices"), orderBy("price"), limit(1));
-  const snap = await getDocs(q);
+  const qPrice = query(collection(db, "pintPrices"), orderBy("price"), limit(1));
+  const cheapestSnap = await getDocs(qPrice);
 
-  if (snap.empty) {
-    document.getElementById("cheapestPint").innerHTML = "No prices submitted yet!";
+  if (cheapestSnap.empty) {
+    document.getElementById("cheapestContent").innerHTML = "No prices submitted yet!";
     return;
   }
 
-  const cheapest = snap.docs[0].data();
+  const cheapest = cheapestSnap.docs[0].data();
+  const pintId = cheapest.pintId;
+  const pubId = cheapest.pubId;
 
+  // Fetch pint + pub names
   const pintSnap = await getDocs(collection(db, "pintDefinitions"));
-  const pintInfo = pintSnap.docs.find(d => d.id === cheapest.pintId)?.data();
+  const pintData = pintSnap.docs.find(d => d.id === pintId)?.data();
 
   const pubSnap = await getDocs(collection(db, "pubs"));
-  const pubInfo = pubSnap.docs.find(d => d.id === cheapest.pubId)?.data();
+  const pubData = pubSnap.docs.find(d => d.id === pubId)?.data();
 
-  document.getElementById("cheapestPint").innerHTML = `
-    <div class="cheapest-wrapper">
-      <div class="cheapest-pint-name">🍺 ${pintInfo?.name} (${pintInfo?.category})</div>
-      <div class="cheapest-pint-price">£${cheapest.price}</div>
-      <div class="cheapest-pint-location">📍 ${pubInfo?.name}</div>
-      <div class="cheapest-pint-trend">➡️ Stable today</div>
-    </div>
+  // TREND LOGIC (Method A: compare LAST TWO prices for same pint/pub)
+  const priceHistoryQuery = query(
+    collection(db, "pintPrices"),
+    orderBy("timestamp", "desc")
+  );
+  const historySnap = await getDocs(priceHistoryQuery);
+
+  let previousPrice = null;
+  let trendDirection = "stable"; // default
+  let diff = 0;
+
+  const entries = historySnap.docs
+    .map(d => d.data())
+    .filter(d => d.pintId === pintId && d.pubId === pubId);
+
+  if (entries.length >= 2) {
+    const latest = entries[0].price;
+    const prev = entries[1].price;
+
+    previousPrice = prev;
+    diff = (latest - prev).toFixed(2);
+
+    if (latest > prev) trendDirection = "up";
+    else if (latest < prev) trendDirection = "down";
+  }
+
+  // SET TREND COLOURS
+  const trendStrip = document.getElementById("cheapestTrend");
+
+  if (trendDirection === "up") {
+    trendStrip.style.background = "#EF4444"; // red
+  } else if (trendDirection === "down") {
+    trendStrip.style.background = "#10B981"; // green
+  } else {
+    trendStrip.style.background = "#D1D5DB"; // grey
+  }
+
+  // TREND LABEL
+  let trendLabel = "➡️ Stable today";
+  if (trendDirection === "up") trendLabel = `🔺 +£${Math.abs(diff)}`;
+  if (trendDirection === "down") trendLabel = `🔻 -£${Math.abs(diff)}`;
+
+  // RENDER CHEAPEST TILE
+  document.getElementById("cheapestContent").innerHTML = `
+    <div class="cheapest-name">🍺 ${pintData?.name} (${pintData?.category})</div>
+    <div class="cheapest-price">£${cheapest.price}</div>
+    <div class="cheapest-pub">📍 ${pubData?.name}</div>
+    <div class="cheapest-trend">${trendLabel}</div>
   `;
 }
 
-/* ---------------- LEAGUE TABLE ------------------ */
-async function loadLeagueTable() {
-  const prices = await getDocs(collection(db, "pintPrices"));
-  const pints = await getDocs(collection(db, "pintDefinitions"));
-  const pubs = await getDocs(collection(db, "pubs"));
+/* ----------------------------------------------------------
+   MARKET CARDS (REPLACES LEAGUE TABLE)
+---------------------------------------------------------- */
+async function loadMarketCards() {
+  const pricesSnap = await getDocs(collection(db, "pintPrices"));
+  const pintsSnap = await getDocs(collection(db, "pintDefinitions"));
+  const pubsSnap = await getDocs(collection(db, "pubs"));
 
-  const pintMap = {}, pubMap = {};
+  const pintMap = {};
+  const pubMap = {};
 
-  pints.forEach(p => pintMap[p.id] = p.data());
-  pubs.forEach(p => pubMap[p.id] = p.data());
+  pintsSnap.forEach(d => pintMap[d.id] = d.data());
+  pubsSnap.forEach(d => pubMap[d.id] = d.data());
 
-  const body = document.querySelector("#leagueTable tbody");
-  body.innerHTML = "";
+  const container = document.getElementById("marketCards");
+  container.innerHTML = "";
 
-  prices.forEach(doc => {
+  pricesSnap.forEach(doc => {
     const d = doc.data();
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${pintMap[d.pintId]?.name}</td>
-      <td>${pintMap[d.pintId]?.category}</td>
-      <td>${pubMap[d.pubId]?.name}</td>
-      <td>£${d.price}</td>
+    const pint = pintMap[d.pintId];
+    const pub = pubMap[d.pubId];
+
+    const card = document.createElement("div");
+    card.classList.add("stock-card");
+
+    card.innerHTML = `
+      <div class="stock-title">🍺 ${pint.name} (${pint.category})</div>
+      <div class="stock-meta">📍 ${pub.name}</div>
+      <div class="stock-price">£${d.price}</div>
     `;
-    body.appendChild(row);
+
+    container.appendChild(card);
   });
 }
 
-/* ---------------- POPULARITY (POLL BAR) ------------------ */
+/* ----------------------------------------------------------
+   POPULARITY — POLL/VOLUME BARS
+---------------------------------------------------------- */
 async function loadPopularityChart() {
   const pints = await getDocs(collection(db, "pintDefinitions"));
   const prices = await getDocs(collection(db, "pintPrices"));
@@ -164,25 +252,25 @@ async function loadPopularityChart() {
   results.sort((a, b) => b.count - a.count);
 
   const max = results[0]?.count || 1;
-  const container = document.getElementById("popularityChartContainer");
 
+  const container = document.getElementById("popularityChartContainer");
   container.innerHTML = results.map(r => `
     <div class="poll-bar-container">
       <div class="poll-label">${r.name}</div>
       <div class="poll-bar-wrapper">
-        <div class="poll-bar" style="width: ${(r.count / max) * 100}%"></div>
+        <div class="poll-bar" style="width:${(r.count / max) * 100}%"></div>
       </div>
-      <div class="poll-value">${r.count}</div>
     </div>
   `).join("");
 }
 
-/* ---------------- PINT INDEX ------------------ */
+/* ----------------------------------------------------------
+   PINT PRICE INDEX
+---------------------------------------------------------- */
 async function loadPPI() {
   const prices = await getDocs(collection(db, "pintPrices"));
 
-  let total = 0;
-  let count = 0;
+  let total = 0, count = 0;
   prices.forEach(d => {
     total += d.data().price;
     count++;
@@ -192,12 +280,15 @@ async function loadPPI() {
   document.getElementById("ppiOutput").innerHTML = `📈 Index: £${index}`;
 }
 
-/* ---------------- COMPARE PINTS ------------------ */
+/* ----------------------------------------------------------
+   COMPARE PINTS
+---------------------------------------------------------- */
 async function comparePints() {
   const A = document.getElementById("comparePintA").value;
   const B = document.getElementById("comparePintB").value;
 
   const prices = await getDocs(collection(db, "pintPrices"));
+
   const aVals = [], bVals = [];
 
   prices.forEach(doc => {
@@ -214,7 +305,9 @@ async function comparePints() {
   `;
 }
 
-/* ---------------- RARE PINTS ------------------ */
+/* ----------------------------------------------------------
+   RARE PINTS
+---------------------------------------------------------- */
 async function loadRarePints() {
   const pints = await getDocs(collection(db, "pintDefinitions"));
   const prices = await getDocs(collection(db, "pintPrices"));
@@ -243,38 +336,40 @@ async function loadRarePints() {
 
   const out = document.getElementById("rarePints");
   out.innerHTML = rare.map(r => `
-    <div class="budgetItem">
+    <div class="stock-card">
       🌟 <strong>${r.name}</strong><br>
       📍 ${r.pub}<br>
       💷 £${r.price || "?"}<br>
-      Rarity Score: ⭐${"⭐".repeat(3 - r.count)}
+      ⭐ Rare (only ${r.count} entries)
     </div>
   `).join("");
 }
 
-/* ---------------- BUDGET PLANNER ------------------ */
+/* ----------------------------------------------------------
+   BUDGET PLANNER
+---------------------------------------------------------- */
 async function calculateBudget() {
   const budget = Number(document.getElementById("budgetInput").value);
   const output = document.getElementById("budgetOutput");
 
   if (!budget || budget <= 0) {
-    output.innerHTML = "⚠️ Please enter a valid amount.";
+    output.innerHTML = "⚠️ Enter a valid amount.";
     return;
   }
 
-  const pricesSnap = await getDocs(collection(db, "pintPrices"));
-  const pintsSnap = await getDocs(collection(db, "pintDefinitions"));
-  const pubsSnap = await getDocs(collection(db, "pubs"));
+  const prices = await getDocs(collection(db, "pintPrices"));
+  const pints = await getDocs(collection(db, "pintDefinitions"));
+  const pubs = await getDocs(collection(db, "pubs"));
 
   const pintMap = {};
   const pubMap = {};
 
-  pintsSnap.forEach(p => pintMap[p.id] = p.data().name);
-  pubsSnap.forEach(p => pubMap[p.id] = p.data().name);
+  pints.forEach(p => pintMap[p.id] = p.data().name);
+  pubs.forEach(p => pubMap[p.id] = p.data().name);
 
   let results = [];
 
-  pricesSnap.forEach(pr => {
+  prices.forEach(pr => {
     const d = pr.data();
     const count = Math.floor(budget / d.price);
 
@@ -302,18 +397,17 @@ async function calculateBudget() {
     <h3>🧾 Breakdown for £${budget}</h3>
 
     <div class="bestValueBox">
-      <h3>🏆 Best Value Recommendation</h3>
+      <h3>🏆 Best Value Buy</h3>
       <p>🍺 <strong>${best.count} × ${best.pint}</strong> @ ${best.pub}</p>
-      <p>💷 Total: £${best.total.toFixed(2)}</p>
-      <p>💰 Change left: £${best.change.toFixed(2)}</p>
+      <p>💷 £${best.total.toFixed(2)} (Change: £${best.change.toFixed(2)})</p>
     </div>
 
-    <h3>🥇 Top 3 Best Buys</h3>
+    <h3>🥇 Top Buys</h3>
     ${topThree.map((r, i) => `
       <div class="bestValueItem">
         ${i === 0 ? "🥇" : i === 1 ? "🥈" : "🥉"}
-        <strong>${r.count} × ${r.pint}</strong> @ ${r.pub}
-        — £${r.total.toFixed(2)} (change £${r.change.toFixed(2)})
+        <strong>${r.count} × ${r.pint}</strong> @ ${r.pub}<br>
+        £${r.total.toFixed(2)} (Change £${r.change.toFixed(2)})
       </div>
     `).join("")}
 
@@ -321,7 +415,7 @@ async function calculateBudget() {
     ${results.map(r => `
       <div class="budgetItem">
         🍺 ${r.count} × ${r.pint} @ ${r.pub}<br>
-        💵 £${r.total.toFixed(2)} spent, £${r.change.toFixed(2)} left
+        💵 £${r.total.toFixed(2)} (Change £${r.change.toFixed(2)})
       </div>
     `).join("")}
   `;
