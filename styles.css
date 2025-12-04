@@ -1,97 +1,287 @@
-/* ----------------------------- */
-/* GLOBAL MOBILE FIXES          */
-/* ----------------------------- */
-
-@media (max-width: 700px) {
-  body {
-    padding: 0 10px;
-  }
-  .dashboard-row {
-    grid-template-columns: 1fr !important;
-    gap: 12px !important;
-  }
-  .dash-card, .full-card {
-    padding: 16px !important;
-    border-radius: 16px !important;
-  }
-  input, select, button {
-    font-size: 1rem !important;
-  }
+/* ================================
+   GLOBAL RESET + BASE
+================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", Arial, sans-serif;
 }
 
-/* ----------------------------- */
-/* COMPARE PINTS — New Layout    */
-/* ----------------------------- */
-
-#comparePintA, #comparePintB {
-  margin-bottom: 12px;
-  padding: 12px;
-  border-radius: 12px;
-  width: 100%;
-  background: #FFF;
-  border: 1px solid #DDD;
-  font-size: 1rem;
+body {
+  background: #f5f6f8;
+  color: #1a1a1a;
+  line-height: 1.5;
+  padding-bottom: 60px;
 }
 
-#comparisonResult {
-  margin-top: 12px;
-  background: #F7F9FF;
-  padding: 14px;
-  border-radius: 12px;
-  font-size: 1.1rem;
-  line-height: 1.4;
+/* ================================
+   HEADER
+================================ */
+.app-header {
+  background: #0d1b3d;
+  color: white;
+  padding: 18px;
+  text-align: center;
+  border-bottom: 3px solid #ffcc00;
 }
 
-/* ----------------------------- */
-/* BUDGET PLANNER — New Layout   */
-/* ----------------------------- */
-
-#budgetInput {
-  padding: 12px;
-  border-radius: 12px;
-  width: 100%;
-  background: #FFF;
-  border: 1px solid #DDD;
-  font-size: 1rem;
-  margin-bottom: 12px;
+.app-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 6px;
 }
 
-#budgetOutput {
-  margin-top: 12px;
-  background: #FFF7E8;
+.ticker-bar {
+  background: rgba(255,255,255,0.12);
+  padding: 6px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+#ticker {
+  display: inline-block;
+  animation: tickerMove 12s linear infinite;
+}
+
+@keyframes tickerMove {
+  from { transform: translateX(0); }
+  to { transform: translateX(-60%); }
+}
+
+/* ================================
+   MAIN CONTENT
+================================ */
+.content {
   padding: 16px;
-  border-radius: 14px;
-  font-size: 1.15rem;
-  line-height: 1.4;
-  color: #6A4B00;
-  border-left: 4px solid #FFB300;
+  max-width: 1100px;
+  margin: auto;
 }
 
-/* ----------------------------- */
-/* RARE PINTS — Redesigned       */
-/* ----------------------------- */
+/* ================================
+   SECTIONS + TITLES
+================================ */
+.section {
+  margin-top: 32px;
+}
 
-.rare-card {
-  background: #FEF9C3;
-  border-radius: 18px;
-  padding: 14px;
+.section-title {
+  font-size: 1.3rem;
   margin-bottom: 12px;
-  border: 1px solid #F2EABC;
+  font-weight: 700;
 }
 
-.rare-name {
-  font-weight: 700;
+/* ================================
+   CARDS
+================================ */
+.card {
+  background: white;
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0px 3px 6px rgba(0,0,0,0.05);
+}
+
+.full-width {
+  width: 100%;
+}
+
+.card-title {
   font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 12px;
 }
 
-.rare-meta {
-  margin-top: 4px;
+/* ================================
+   GRID LAYOUT (MOBILE FIRST)
+================================ */
+.input-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 700px) {
+  .input-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .two-col {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ================================
+   HERO CARD
+================================ */
+.hero-card {
+  background: #ffcc00;
+  color: #1a1a1a;
+  padding: 22px;
+  border-radius: 14px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.hero-card div {
+  margin-bottom: 6px;
+}
+
+/* ================================
+   INPUTS + BUTTONS
+================================ */
+input, select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+  font-size: 1rem;
+  background: #fafafa;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+}
+
+.row select, .row input {
+  flex: 1;
+}
+
+.btn-primary {
+  width: 100%;
+  background: #1a56db;
+  color: white;
+  border: none;
+  padding: 12px;
+  font-size: 1rem;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background: #0e3fad;
+}
+
+.btn-small {
+  width: 100%;
+  background: #0d1b3d;
+  color: white;
+  border: none;
+  padding: 8px;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.btn-danger {
+  background: #d62828;
+  color: white;
+  padding: 12px;
+  width: 100%;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  margin-top: 10px;
+}
+
+.btn-danger:hover {
+  background: #b71f1f;
+}
+
+/* ================================
+   TABLE
+================================ */
+table {
+  width: 100%;
+  border-collapse: collapse;
   font-size: 0.95rem;
-  color: #444;
 }
 
-.rare-price {
+thead {
+  background: #0d1b3d;
+  color: white;
+}
+
+th, td {
+  padding: 10px;
+}
+
+tbody tr:nth-child(even) {
+  background: #f2f4f7;
+}
+
+tbody tr:hover {
+  background: #e6eaf0;
+}
+
+/* ================================
+   POPULARITY & DISTRIBUTION BARS
+================================ */
+.poll-label, .dist-label {
+  font-size: 0.9rem;
   margin-top: 6px;
-  font-weight: 700;
 }
 
+.poll-bar-wrapper, .dist-bar-wrapper {
+  width: 100%;
+  height: 10px;
+  background: #e5e7eb;
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+
+.poll-bar {
+  background: #1a56db;
+  height: 10px;
+  border-radius: 10px;
+}
+
+.dist-bar {
+  background: #ffb703;
+  height: 10px;
+  border-radius: 10px;
+}
+
+/* ================================
+   RESULT BOXES
+================================ */
+.result-box {
+  margin-top: 12px;
+  padding: 12px;
+  background: #eef2ff;
+  border-radius: 10px;
+  font-size: 1rem;
+}
+
+/* ================================
+   ADMIN LINK + FOOTER
+================================ */
+.admin-link {
+  text-align: center;
+  margin-top: 12px;
+  font-size: 0.95rem;
+  color: #1a56db;
+  cursor: pointer;
+}
+
+.footer {
+  text-align: center;
+  margin-top: 40px;
+  padding: 20px;
+  font-size: 0.9rem;
+  color: #777;
+}
