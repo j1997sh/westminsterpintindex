@@ -1,6 +1,7 @@
-/* ----------------------------------------------------------
-   GLOBAL BASE STYLES
----------------------------------------------------------- */
+/* ==========================================================
+   GLOBAL BASE STYLES — Apple-style light dashboard
+========================================================== */
+
 * {
   box-sizing: border-box;
 }
@@ -8,55 +9,56 @@
 body {
   margin: 0;
   padding: 0;
-  background: #F5F6F8; /* Light Apple-style dashboard grey */
-  font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
-  color: #0F172A;
+  background: #F5F6F8; /* Light iOS dashboard grey */
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+  color: #0F172A; /* Deep slate blue */
 }
 
-h1, h2, h3, p {
+h1, h2, h3, h4, p {
   margin: 0;
 }
 
 
-/* ----------------------------------------------------------
+/* ==========================================================
    HEADER + TICKER
----------------------------------------------------------- */
+========================================================== */
+
 #header {
   width: 100%;
-  background: white;
-  padding: 22px 0 10px 0;
+  background: #FFFFFF;
+  padding: 24px 10px 12px 10px;
   text-align: center;
-  border-bottom: 1px solid #E2E4E8;
+  border-bottom: 1px solid #E5E7EB;
 }
 
 #header-title {
   font-size: 32px;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 #header-underline {
   width: 100%;
   height: 3px;
-  background: #FACC15;
+  background: #FACC15; /* Gold highlight */
   margin-top: 10px;
 }
 
 #ticker-container {
   width: 100%;
-  background: #FFFFFF;
-  border-top: 1px solid #E2E4E8;
   padding: 10px 0;
   overflow: hidden;
+  border-top: 1px solid #E5E7EB;
+  background: #FFFFFF;
 }
 
 #ticker {
   display: inline-block;
-  white-space: nowrap;
   padding-left: 100%;
+  white-space: nowrap;
   animation: tickerMove 15s linear infinite;
   font-size: 18px;
-  font-weight: 500;
   color: #0F172A;
+  font-weight: 500;
 }
 
 @keyframes tickerMove {
@@ -64,30 +66,45 @@ h1, h2, h3, p {
   to   { transform: translateX(-100%); }
 }
 
-.ticker-up { color: #16A34A; }
-.ticker-down { color: #DC2626; }
+.ticker-up { color: #16A34A; }   /* Green */
+.ticker-down { color: #DC2626; } /* Red */
 
 
-/* ----------------------------------------------------------
-   HERO CHEAPEST PINT CARD
----------------------------------------------------------- */
+/* ==========================================================
+   SECTION HEADERS
+========================================================== */
+
+.section-header {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 22px;
+  font-weight: 800;
+  margin: 28px 0 14px 0;
+  color: #111827;
+}
+
+
+/* ==========================================================
+   HERO CHEAPEST PINT — Full-bleed card
+========================================================== */
+
 #hero-container {
   width: 100%;
   background: #FACC15;
-  padding: 28px 20px;
+  padding: 32px 20px;
   border-radius: 0 0 22px 22px;
   position: relative;
-  margin-bottom: 18px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  margin-bottom: 20px;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.10);
 }
 
 #hero-trend-strip {
   width: 12px;
-  background: #D1D5DB;
   position: absolute;
+  left: 0;
   top: 0;
   bottom: 0;
-  left: 0;
+  background: #D1D5DB;
   border-radius: 0 0 0 22px;
 }
 
@@ -95,46 +112,41 @@ h1, h2, h3, p {
   padding-left: 20px;
 }
 
-#hero-content .cheapest-name {
+.cheapest-name {
   font-size: 22px;
   font-weight: 700;
 }
 
-#hero-content .cheapest-price {
-  font-size: 50px;
+.cheapest-price {
+  font-size: 52px;
   font-weight: 800;
   margin: 8px 0;
-  line-height: 1;
 }
 
-#hero-content .cheapest-pub {
+.cheapest-pub,
+.cheapest-trend {
   font-size: 20px;
-  margin-top: 12px;
-}
-
-#hero-content .cheapest-trend {
-  font-size: 19px;
-  margin-top: 6px;
+  margin-top: 8px;
 }
 
 
-/* ----------------------------------------------------------
-   DASHBOARD GRID LAYOUT (2 columns ALWAYS)
----------------------------------------------------------- */
+/* ==========================================================
+   DASHBOARD GRID — TWO COLUMN ALWAYS
+========================================================== */
+
 .dashboard-row {
   display: flex;
   flex-direction: row;
   gap: 10px;
   width: 100%;
   margin-bottom: 14px;
-  padding: 0 0; /* full bleed */
+  padding: 0; /* full-bleed layout */
 }
 
-/* Two equal columns ALWAYS */
-.dashboard-row .dash-card {
-  width: 50%;
-  background: white;
-  padding: 22px;
+.dash-card {
+  width: 50%; /* ALWAYS two columns */
+  background: #FFFFFF;
+  padding: 24px;
   border-radius: 22px;
   box-shadow: 0 6px 18px rgba(0,0,0,0.08);
 }
@@ -151,50 +163,43 @@ h1, h2, h3, p {
 }
 
 
-/* ----------------------------------------------------------
-   FULL-WIDTH CARDS
----------------------------------------------------------- */
+/* ==========================================================
+   FULL WIDTH CARDS
+========================================================== */
+
 .full-card {
   width: 100%;
-  background: white;
+  background: #FFFFFF;
   padding: 24px;
-  margin: 0 0 16px 0; /* full bleed */
+  margin-bottom: 18px;
   border-radius: 22px;
   box-shadow: 0 6px 18px rgba(0,0,0,0.08);
 }
 
-.section-header {
-  width: 100%;
-  background: transparent;
-  font-size: 22px;
-  font-weight: 800;
-  margin: 26px 0 14px 10px;
-  color: #111827;
-}
 
+/* ==========================================================
+   INPUTS & BUTTONS
+========================================================== */
 
-/* ----------------------------------------------------------
-   INPUT FIELDS + BUTTONS
----------------------------------------------------------- */
 input, select {
   width: 100%;
   padding: 18px;
   margin-bottom: 16px;
-  border: 1px solid #D1D5DB;
   border-radius: 14px;
+  border: 1px solid #D1D5DB;
   font-size: 18px;
-  background: #FFFFFF;
+  background: white;
 }
 
 button {
   width: 100%;
   padding: 16px;
-  background: #2563EB;
-  color: white;
   border-radius: 14px;
   border: none;
   font-size: 18px;
   font-weight: 600;
+  background: #2563EB;
+  color: white;
 }
 
 button:hover {
@@ -202,10 +207,12 @@ button:hover {
 }
 
 
-/* ----------------------------------------------------------
+/* ==========================================================
    MARKET TABLE
----------------------------------------------------------- */
+========================================================== */
+
 .table-scroll {
+  width: 100%;
   overflow-x: auto;
 }
 
@@ -220,6 +227,7 @@ th {
   padding: 16px;
   font-size: 18px;
   font-weight: 700;
+  text-align: left;
 }
 
 td {
@@ -232,24 +240,29 @@ td {
   margin-top: 14px;
   padding: 16px;
   background: #0F172A;
+  color: white;
   border-radius: 14px;
+  font-size: 18px;
+  font-weight: 600;
 }
 
 
-/* ----------------------------------------------------------
-   POPULARITY CHART BARS
----------------------------------------------------------- */
-#popularityChartContainer .poll-label {
+/* ==========================================================
+   POPULARITY (horizontal bars)
+========================================================== */
+
+.poll-label {
   font-size: 18px;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
+  font-weight: 500;
 }
 
 .poll-bar-wrapper {
   width: 100%;
-  height: 20px;
+  height: 22px;
   background: #E5E7EB;
   border-radius: 14px;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
 .poll-bar {
@@ -259,23 +272,85 @@ td {
 }
 
 
-/* ----------------------------------------------------------
-   RESULT TEXT
----------------------------------------------------------- */
-.card-result {
-  margin-top: 18px;
+/* ==========================================================
+   PRICE DISTRIBUTION (BBC-style horizontal bars)
+========================================================== */
+
+#priceDistribution .dist-label {
   font-size: 18px;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.dist-bar-wrapper {
+  width: 100%;
+  height: 20px;
+  background: #E5E7EB;
+  border-radius: 14px;
+  margin-bottom: 12px;
+}
+
+.dist-bar {
+  height: 100%;
+  background: #10B981; /* green */
+  border-radius: 14px;
 }
 
 
-/* ----------------------------------------------------------
+/* ==========================================================
+   CHEAPEST PUBS LEADERBOARD
+========================================================== */
+
+#cheapestPubs .pub-row {
+  font-size: 18px;
+  padding: 10px 0;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+#cheapestPubs .pub-row:last-child {
+  border-bottom: none;
+}
+
+.pub-rank {
+  font-weight: 700;
+  margin-right: 8px;
+}
+
+
+/* ==========================================================
+   RECOMMENDATIONS BLOCK
+========================================================== */
+
+#recommendations .rec-item {
+  margin-bottom: 14px;
+  font-size: 18px;
+}
+
+#recommendations .rec-item strong {
+  font-weight: 700;
+}
+
+
+/* ==========================================================
+   CARD RESULT TEXT (Compare, Budget etc.)
+========================================================== */
+
+.card-result {
+  margin-top: 16px;
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+
+/* ==========================================================
    FOOTER
----------------------------------------------------------- */
+========================================================== */
+
 #footer {
   width: 100%;
-  padding: 22px;
-  text-align: center;
+  padding: 24px;
   background: #F3F4F6;
+  text-align: center;
   font-size: 16px;
   margin-top: 30px;
 }
