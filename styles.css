@@ -1,26 +1,75 @@
 /* ------------------------------
-   GLOBAL BASE
+   GLOBAL + CONTAINER
 ------------------------------ */
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
 body {
+  margin: 0;
+  padding: 0;
+  background: #F1F5F9;
   font-family: 'Inter', sans-serif;
-  background: #F3F4F6; /* Soft dashboard grey */
-  color: #1F2937;      /* Slate navy */
-  padding: 20px;
-  line-height: 1.7;
+  color: #0F172A;
+}
+
+.container {
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 16px;
 }
 
 .site-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 32px;
-  margin-bottom: 6px;
+  font-size: 30px;
+  font-weight: 700;
+  margin-bottom: 4px;
 }
 
 .site-subtitle {
-  font-size: 16px;
+  color: #475569;
   margin-bottom: 24px;
-  color: #4B5563;
+}
+
+/* ------------------------------
+   FULL-WIDTH YELLOW CHEAPEST TILE
+------------------------------ */
+#cheapestTile {
+  background: #FACC15;
+  padding: 28px;
+  border-radius: 16px;
+  margin-bottom: 24px;
+  position: relative;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.15);
+}
+
+.trend-strip {
+  width: 10px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  border-radius: 16px 0 0 16px;
+}
+
+#cheapestContent {
+  padding-left: 12px;
+}
+
+.cheapest-name {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.cheapest-price {
+  font-size: 36px;
+  font-weight: 800;
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+
+.cheapest-pub {
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.cheapest-trend {
+  font-size: 16px;
 }
 
 /* ------------------------------
@@ -29,40 +78,59 @@ body {
 .tile {
   background: #FFFFFF;
   padding: 24px;
+  border-radius: 16px;
   margin-bottom: 24px;
-  border-radius: 12px;
-  box-shadow: 0px 4px 14px rgba(0,0,0,0.06);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.07);
 }
 
 .tile h2 {
+  font-size: 22px;
   margin-bottom: 16px;
-  color: #1F2937;
 }
 
-/* Inner sub-cards for Add Data */
-.subcard {
-  background: #F9FAFB;
-  padding: 16px;
+/* ------------------------------
+   ACCORDION
+------------------------------ */
+.accordion-item {
+  margin-bottom: 10px;
+}
+
+.accordion-header {
+  width: 100%;
+  background: #E2E8F0;
+  padding: 14px;
   border-radius: 8px;
-  margin-bottom: 16px;
-  border: 1px solid #E5E7EB;
+  font-size: 16px;
+  text-align: left;
+  border: none;
+  cursor: pointer;
 }
 
+.accordion-body {
+  padding: 12px;
+  display: none;
+  background: #F8FAFC;
+  border-radius: 8px;
+  margin-top: 6px;
+}
+
+/* ------------------------------
+   INPUTS + BUTTONS
+------------------------------ */
 input, select {
   width: 100%;
-  padding: 10px;
-  margin-top: 6px;
-  margin-bottom: 12px;
-  border-radius: 6px;
-  border: 1px solid #D1D5DB;
+  padding: 12px;
+  margin-bottom: 14px;
+  border-radius: 8px;
+  border: 1px solid #CBD5E1;
 }
 
 button {
   background: #2563EB;
-  color: white;
-  padding: 10px 16px;
+  color: #FFFFFF;
+  padding: 12px 20px;
+  border-radius: 8px;
   border: none;
-  border-radius: 6px;
   cursor: pointer;
 }
 
@@ -71,134 +139,55 @@ button:hover {
 }
 
 /* ------------------------------
-   CHEAPEST PINT CARD
+   STOCK CARDS (League Table)
 ------------------------------ */
-#cheapestPint .cheapest-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+.stock-card {
+  background: #F8FAFC;
+  padding: 18px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
 }
 
-.cheapest-pint-name {
+.stock-title {
   font-size: 20px;
-  font-weight: 600;
+  font-weight: 700;
 }
 
-.cheapest-pint-price {
-  font-size: 28px;
-  font-weight: bold;
-  color: #F59E0B; /* Amber */
+.stock-meta {
+  font-size: 14px;
+  color: #475569;
+  margin-bottom: 8px;
 }
 
-.cheapest-pint-location {
-  font-size: 16px;
-  color: #4B5563;
-}
-
-/* ------------------------------
-   TABLE
------------------------------- */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-thead {
-  background: #1F2937;
-  color: white;
-}
-
-thead th {
-  padding: 12px;
-  font-weight: 600;
-}
-
-tbody td {
-  padding: 12px;
-  border-bottom: 1px solid #E5E7EB;
+.stock-price {
+  font-size: 22px;
+  font-weight: 700;
 }
 
 /* ------------------------------
-   POLL-STYLE POPULARITY BARS
+   POLL BAR STYLE
 ------------------------------ */
 .poll-bar-container {
-  display: flex;
-  align-items: center;
-  margin: 10px 0;
+  margin: 14px 0;
 }
 
 .poll-label {
-  width: 35%;
   font-weight: 600;
+  margin-bottom: 4px;
 }
 
 .poll-bar-wrapper {
-  width: 55%;
-  background: #E5E7EB;
-  border-radius: 6px;
-  height: 18px;
+  width: 100%;
+  height: 22px;
+  background: #E2E8F0;
+  border-radius: 10px;
 }
 
 .poll-bar {
   height: 100%;
-  background-color: #2563EB;
-  border-radius: 6px;
-}
-
-.poll-value {
-  width: 10%;
-  text-align: right;
-  font-weight: bold;
-}
-
-/* ------------------------------
-   PINT INDEX
------------------------------- */
-#indexSection {
-  font-size: 22px;
-  font-weight: bold;
-}
-
-/* ------------------------------
-   COMPARISON RESULT
------------------------------- */
-#comparisonResult {
-  background: #F9FAFB;
-  border-left: 4px solid #2563EB;
-  padding: 14px;
-  border-radius: 8px;
-  margin-top: 16px;
-}
-
-/* ------------------------------
-   BUDGET PLANNER
------------------------------- */
-#budgetPlanner input {
-  max-width: 250px;
-}
-
-.bestValueBox {
-  background: #FFF7D6;
-  padding: 16px;
-  border-left: 5px solid #F59E0B;
-  border-radius: 6px;
-  margin: 16px 0;
-}
-
-.bestValueItem {
-  background: #EDE9FE;
-  padding: 12px;
-  border-radius: 6px;
-  margin-bottom: 10px;
-}
-
-.budgetItem {
-  background: #F3F4F6;
-  padding: 10px;
-  border-radius: 6px;
-  margin: 6px 0;
+  background: #2563EB;
+  border-radius: 10px;
 }
 
 /* ------------------------------
@@ -207,7 +196,8 @@ tbody td {
 .footer {
   text-align: center;
   padding: 20px;
-  background: #1F2937;
+  background: #0F172A;
   color: white;
-  border-radius: 12px;
+  margin-top: 40px;
+  border-radius: 16px 16px 0 0;
 }
