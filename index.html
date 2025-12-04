@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>🍺 Westminster Political Pint Market</title>
+  <title>🍺 Westminster Pint Exchange (WPX)</title>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="styles.css">
@@ -10,80 +10,85 @@
 
 <body>
 
-  <h1 class="site-title">🍺 Westminster Political Pint Market</h1>
-  <p class="site-subtitle">Live pint prices • Pub comparisons • Price index</p>
+<div class="container">
 
-  <!-- TILE: CHEAPEST PINT -->
-  <section class="tile" id="cheapestPintSection">
-    <h2>🔥 Cheapest Pint Right Now</h2>
-    <div id="cheapestPint"></div>
+  <h1 class="site-title">🍺 Westminster Political Pint Market</h1>
+  <p class="site-subtitle">Live pint prices • Pub comparisons • Market index</p>
+
+  <!-- FULL-WIDTH YELLOW TILE -->
+  <section id="cheapestTile">
+    <div id="cheapestTrend" class="trend-strip"></div>
+    <div id="cheapestContent"></div>
   </section>
 
-  <!-- TILE: ADD DATA -->
+  <!-- ACCORDION: ADD DATA -->
   <section class="tile">
     <h2>➕ Add Data</h2>
 
-    <div class="subcard">
-      <h3>🏰 Add Pub</h3>
-      <input id="pubName" placeholder="Pub name">
-      <input id="pubAddress" placeholder="Address">
-      <button id="addPubBtn">Add Pub</button>
-    </div>
+    <div class="accordion">
 
-    <div class="subcard">
-      <h3>🍺 Add Pint Type</h3>
-      <input id="pintName" placeholder="Pint name">
-      <input id="pintCategory" placeholder="Category (Lager, IPA, etc)">
-      <button id="addPintBtn">Add Pint</button>
-    </div>
+      <!-- Add Pub -->
+      <div class="accordion-item">
+        <button class="accordion-header">🏛️ Add Pub</button>
+        <div class="accordion-body">
+          <input id="pubName" placeholder="Pub name">
+          <input id="pubAddress" placeholder="Address">
+          <button id="addPubBtn">Add Pub</button>
+        </div>
+      </div>
 
-    <div class="subcard">
-      <h3>💷 Add Pint Price</h3>
-      <select id="pricePubSelect"></select>
-      <select id="pricePintSelect"></select>
-      <input id="pintPrice" type="number" placeholder="Price (£)">
-      <button id="addPriceBtn">Submit Price</button>
+      <!-- Add Pint Type -->
+      <div class="accordion-item">
+        <button class="accordion-header">🍺 Add Pint Type</button>
+        <div class="accordion-body">
+          <input id="pintName" placeholder="Pint name">
+          <input id="pintCategory" placeholder="Category (Lager, IPA, etc)">
+          <button id="addPintBtn">Add Pint</button>
+        </div>
+      </div>
+
+      <!-- Add Price -->
+      <div class="accordion-item">
+        <button class="accordion-header">💷 Add Pint Price</button>
+        <div class="accordion-body">
+          <select id="pricePubSelect"></select>
+          <select id="pricePintSelect"></select>
+          <input id="pintPrice" type="number" placeholder="Price (£)">
+          <button id="addPriceBtn">Submit Price</button>
+        </div>
+      </div>
+
     </div>
   </section>
 
-  <!-- TILE: LEAGUE TABLE -->
+  <!-- LEAGUE TABLE AS STOCK CARDS -->
   <section class="tile">
-    <h2>📊 League Table</h2>
-    <table id="leagueTable">
-      <thead>
-        <tr>
-          <th>Pint</th>
-          <th>Category</th>
-          <th>Pub</th>
-          <th>Price</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+    <h2>📊 Market Prices (Stock Cards)</h2>
+    <div id="marketCards"></div>
   </section>
 
-  <!-- TILE: POPULARITY -->
+  <!-- POPULARITY (POLL STYLE) -->
   <section class="tile">
-    <h2>🔥 Most Submitted Pints (Poll Style)</h2>
+    <h2>🔥 Market Volume (Top Pints)</h2>
     <div id="popularityChartContainer"></div>
   </section>
 
-  <!-- TILE: PINT INDEX -->
+  <!-- PINT INDEX -->
   <section class="tile" id="indexSection">
-    <h2>📈 Westminster Pint Index</h2>
+    <h2>📈 Pint Market Index</h2>
     <div id="ppiOutput"></div>
   </section>
 
-  <!-- TILE: COMPARISON -->
+  <!-- COMPARISON -->
   <section class="tile">
-    <h2>⚖️ Pint Comparison</h2>
+    <h2>⚖️ Compare Pints</h2>
     <select id="comparePintA"></select>
     <select id="comparePintB"></select>
     <button id="compareBtn">Compare</button>
     <div id="comparisonResult"></div>
   </section>
 
-  <!-- TILE: BUDGET PLANNER -->
+  <!-- BUDGET PLANNER -->
   <section class="tile" id="budgetPlanner">
     <h2>💰 Budget Planner</h2>
     <input id="budgetInput" type="number" placeholder="Enter your budget (£)">
@@ -91,19 +96,20 @@
     <div id="budgetOutput"></div>
   </section>
 
-  <!-- TILE: RARE PINTS -->
+  <!-- RARE PINTS -->
   <section class="tile">
-    <h2>🌟 Rare Pints of Westminster</h2>
+    <h2>🌟 Rare Pints</h2>
     <div id="rarePints"></div>
   </section>
 
-  <footer class="footer">
-    WestminsterPints © 2025 🍺 Powered by Firestore
-  </footer>
+</div>
 
-  <!-- JS FILES -->
-  <script type="module" src="firebase.js"></script>
-  <script type="module" src="app.js"></script>
+<footer class="footer">
+  Westminster Pint Exchange © 2025 🍺 Powered by Firestore
+</footer>
+
+<script type="module" src="firebase.js"></script>
+<script type="module" src="app.js"></script>
 
 </body>
 </html>
