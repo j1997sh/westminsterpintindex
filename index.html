@@ -27,14 +27,14 @@
       <h3>🏰 Add Pub</h3>
       <input id="pubName" placeholder="Pub name">
       <input id="pubAddress" placeholder="Address">
-      <button onclick="addPub()">Add Pub</button>
+      <button id="addPubBtn">Add Pub</button>
     </div>
 
     <div>
       <h3>🍺 Add Pint Type</h3>
       <input id="pintName" placeholder="Pint name">
       <input id="pintCategory" placeholder="Category (Lager, IPA, etc)">
-      <button onclick="addPint()">Add Pint</button>
+      <button id="addPintBtn">Add Pint</button>
     </div>
 
     <div>
@@ -42,7 +42,7 @@
       <select id="pricePubSelect"></select>
       <select id="pricePintSelect"></select>
       <input id="pintPrice" type="number" placeholder="Price (£)">
-      <button onclick="addPrice()">Submit Price</button>
+      <button id="addPriceBtn">Submit Price</button>
     </div>
   </section>
 
@@ -80,7 +80,8 @@
 
     <select id="comparePintA"></select>
     <select id="comparePintB"></select>
-    <button onclick="comparePints()">Compare</button>
+    <button id="compareBtn">Compare</button>
+
     <div id="comparisonResult"></div>
   </section>
 
